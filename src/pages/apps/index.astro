@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const apps = (await getCollection('apps'))
+  .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0));
+---
+
+<BaseLayout title="应用">
+  <Header />
+  <main class="page-main">
+    <div class="container">
+      <div class="page-header reveal">
+        <h1>应用</h1>
+        <p>我自己开发的小工具和应用</p>
+      </div>
+
+      {apps.length > 0 ? (
+        <section class="section" style="padding-top:20px;">
+          <div class="apps-grid">
+            {apps.map(app => (
+              <a href={`/apps/${app.slug}/`} class="tilt-card app-card reveal">
+                <div class="app-top">
+                  <div class="app-icon">{app.data.icon || '📦'}</div>
+                  <span class="app-ver">v{app.data.version}</span>
+                </div>
+                <h3>{app.data.name}</h3>
+                <p class="app-desc">{app.data.summary}</p>
+                <div class="app-platforms">
+                  {app.data.platforms.map(p => (
+                    <span>{p}</span>
+                  ))}
+                </div>
+                <div class="app-actions">
+                  {app.data.downloadUrl && <span class="app-btn primary">下载</span>}
+                  {app.data.repoUrl && <span class="app-btn">源代码</span>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <p style="text-align:center;color:var(--text-muted);padding:80px 0;">还没有发布的应用，开发中</p>
+      )}
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const articles = (await getCollection('articles'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="文章">
+  <Header />
+  <main class="page-main">
+    <div class="container">
+      <div class="page-header reveal">
+        <h1>文章</h1>
+        <p>技术分享、开发心得、效率思考</p>
+      </div>
+
+      {articles.length > 0 ? (
+        <section class="section" style="padding-top:20px;">
+          <div class="articles-grid">
+            {articles.map(article => (
+              <a href={`/articles/${article.slug}/`} class="tilt-card article-card reveal">
+                {article.data.tags && (
+                  <div class="a-tags">
+                    {article.data.tags.map(tag => (
+                      <span>{tag}</span>
+                    ))}
+                  </div>
+                )}
+                <h3>{article.data.title}</h3>
+                <p class="excerpt">{article.data.summary}</p>
+                <div class="a-meta">
+                  <span class="date">
+                    {article.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                  </span>
+                  <span class="more">阅读全文 &rarr;</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <p style="text-align:center;color:var(--text-muted);padding:80px 0;">还没有文章，敬请期待</p>
+      )}
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

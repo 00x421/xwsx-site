@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const apps = await getCollection('apps');
+  return apps.map(app => ({
+    params: { slug: app.slug },
+    props: { app },
+  }));
+}
+
+const { app } = Astro.props;
+const { Content } = await app.render();
+---
+
+<BaseLayout title={app.data.name}>
+  <Header />
+  <main class="page-main">
+    <div class="detail-page">
+      <header class="detail-header">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+          <div class="app-icon" style="width:56px;height:56px;font-size:26px;">{app.data.icon || '📦'}</div>
+          <div>
+            <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.02em;">{app.data.name}</h1>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">v{app.data.version}</span>
+          </div>
+        </div>
+        {app.data.summary && <p class="detail-summary">{app.data.summary}</p>}
+        <div class="app-platforms" style="margin-top:14px;">
+          {app.data.platforms.map(p => (
+            <span>{p}</span>
+          ))}
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          {app.data.downloadUrl && (
+            <a href={app.data.downloadUrl} class="app-btn primary" style="padding:10px 24px;text-decoration:none;" target="_blank">
+              下载 {app.data.name}
+            </a>
+          )}
+          {app.data.repoUrl && (
+            <a href={app.data.repoUrl} class="app-btn" style="padding:10px 24px;text-decoration:none;" target="_blank">
+              源代码
+            </a>
+          )}
+        </div>
+      </header>
+
+      <div class="detail-divider"></div>
+
+      <div class="detail-content">
+        <Content />
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

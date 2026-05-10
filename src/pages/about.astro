@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="关于">
+  <Header />
+  <main class="page-main">
+    <div class="container">
+      <div class="page-header reveal">
+        <h1>关于</h1>
+      </div>
+      <div class="about-page">
+        <div class="about-section reveal">
+          <h3>👋 你好，我是烦恼全無先生</h3>
+          <p>一个热爱折腾的独立开发者 / 全栈工程师。写写代码、做做应用、分享些有意思的东西。</p>
+        </div>
+
+        <div class="about-section reveal reveal-d2">
+          <h3>🛠 技术栈</h3>
+          <div class="about-tags">
+            <span>TypeScript</span>
+            <span>React</span>
+            <span>Node.js</span>
+            <span>Python</span>
+            <span>Astro</span>
+            <span>Rust</span>
+            <span>Tauri</span>
+          </div>
+        </div>
+
+        <div class="about-section reveal reveal-d3">
+          <h3>📝 关于这个网站</h3>
+          <p>本站使用 <strong>Astro</strong> 构建，采用静态站点生成方案。内容通过 Markdown 管理。</p>
+          <p>雾蓝灰莫兰迪配色，精致利落的动效，追求现代极简的阅读体验。</p>
+        </div>
+
+        <div class="about-section reveal reveal-d4">
+          <h3>📬 联系我</h3>
+          <div class="about-contact">
+            <a href="https://github.com" target="_blank">🐙 GitHub</a>
+            <a href="mailto:hello@example.com">✉ hello@example.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

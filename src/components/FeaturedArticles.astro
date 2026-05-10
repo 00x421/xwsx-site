@@ -1,0 +1,52 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  articles: CollectionEntry<'articles'>[];
+}
+
+const { articles } = Astro.props;
+---
+
+<section class="section" id="articles">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2>最新文章</h2>
+      <p>技术分享、开发心得、效率思考</p>
+    </div>
+
+    {articles.length > 0 ? (
+      <div class="articles-grid">
+        {articles.map((article, i) => (
+          <a
+            href={`/articles/${article.slug}/`}
+            class:list={['tilt-card', 'article-card', { 'span-full': i === 2 }]}
+          >
+            {article.data.tags && (
+              <div class="a-tags">
+                {article.data.tags.map(tag => (
+                  <span>{tag}</span>
+                ))}
+              </div>
+            )}
+            <h3>{article.data.title}</h3>
+            <p class="excerpt">{article.data.summary}</p>
+            <div class="a-meta">
+              <span class="date">
+                {article.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+              </span>
+              <span class="more">阅读全文 &rarr;</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p style="text-align:center;color:var(--text-muted);padding:60px 0;">还没有文章，敬请期待</p>
+    )}
+
+    <div class="view-all reveal">
+      <a href="/articles/">查看全部文章 &rarr;</a>
+    </div>
+  </div>
+</section>
