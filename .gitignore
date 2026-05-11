@@ -4,3 +4,5 @@ node_modules/
 docs/
 dist/
 .astro/
+.playwright-mcp/
+*.png

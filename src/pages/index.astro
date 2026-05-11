@@ -2,26 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import FeaturedArticles from '../components/FeaturedArticles.astro';
-import FeaturedApps from '../components/FeaturedApps.astro';
-import KnowledgeBase from '../components/KnowledgeBase.astro';
-import Footer from '../components/Footer.astro';
-import { getCollection } from 'astro:content';
-
-const articles = (await getCollection('articles'))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-
-const apps = (await getCollection('apps'))
-  .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
-  .slice(0, 2);
 ---
 
 <BaseLayout title="首页">
   <Header />
   <Hero />
-  <FeaturedArticles articles={articles} />
-  <FeaturedApps apps={apps} />
-  <KnowledgeBase />
-  <Footer />
 </BaseLayout>

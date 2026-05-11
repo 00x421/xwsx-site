@@ -50,6 +50,14 @@ const { Content } = await app.render();
 
       <div class="detail-divider"></div>
 
+      {app.data.screenshots && app.data.screenshots.length > 0 && (
+        <div class="screenshot-gallery">
+          {app.data.screenshots.map(src => (
+            <img src={src} alt={`${app.data.name} 截图`} loading="lazy" />
+          ))}
+        </div>
+      )}
+
       <div class="detail-content">
         <Content />
       </div>

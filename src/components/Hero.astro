@@ -1,10 +1,30 @@
 ---
 ---
 
-<section class="hero">
+<section class="hero hero-landing">
+  <!-- Particles -->
+  <div class="hero-particles" aria-hidden="true">
+    <span class="hero-particle" style="width:3px;height:3px;top:18%;left:14%;opacity:0.1;animation:particleFloat 12s ease-in-out infinite;"></span>
+    <span class="hero-particle" style="width:2px;height:2px;top:35%;left:78%;opacity:0.08;animation:particleFloat 15s ease-in-out 1s infinite;"></span>
+    <span class="hero-particle" style="width:4px;height:4px;top:55%;left:28%;opacity:0.06;animation:particleFloat 10s ease-in-out 2s infinite;"></span>
+    <span class="hero-particle" style="width:2px;height:2px;top:72%;left:62%;opacity:0.1;animation:particleFloat 18s ease-in-out 0.5s infinite;"></span>
+    <span class="hero-particle" style="width:3px;height:3px;top:25%;left:48%;opacity:0.07;animation:particleFloat 14s ease-in-out 3s infinite;"></span>
+    <span class="hero-particle" style="width:2px;height:2px;top:48%;left:8%;opacity:0.09;animation:particleFloat 16s ease-in-out 1.5s infinite;"></span>
+    <span class="hero-particle" style="width:3px;height:3px;top:12%;left:68%;opacity:0.08;animation:particleFloat 11s ease-in-out 2.5s infinite;"></span>
+    <span class="hero-particle" style="width:2px;height:2px;top:82%;left:38%;opacity:0.1;animation:particleFloat 13s ease-in-out 0.8s infinite;"></span>
+    <span class="hero-particle" style="width:3px;height:3px;top:42%;left:88%;opacity:0.06;animation:particleFloat 17s ease-in-out 4s infinite;"></span>
+    <span class="hero-particle" style="width:2px;height:2px;top:65%;left:52%;opacity:0.08;animation:particleFloat 19s ease-in-out 1.2s infinite;"></span>
+  </div>
+
+  <!-- Time-aware greeting -->
+  <p class="hero-time-greeting hero-line" id="timeGreeting"></p>
+
+  <!-- Identity -->
   <p class="hero-greeting hero-line">HELLO, I'M</p>
   <h1 class="hero-name hero-line">烦恼全無<span class="accent">先生</span></h1>
-  <p class="hero-title hero-line">独立开发者 / 全栈工程师 · 专注效率工具与优雅数字产品</p>
+  <p class="hero-title hero-line" data-typewriter="独立开发者 / 全栈工程师 · 专注效率工具与优雅数字产品">
+    <span id="typewriter"></span><span class="typewriter-cursor"></span>
+  </p>
   <div class="hero-tags hero-line">
     <span>全栈开发</span>
     <span>独立开发</span>
@@ -12,20 +32,24 @@
     <span>开源</span>
   </div>
 
-  <div class="hero-social hero-line">
-    <a href="https://github.com" target="_blank" class="social-icon" title="GitHub">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+  <!-- Navigation entries -->
+  <div class="hero-nav hero-line">
+    <a href="/articles/" class="hero-nav-link">
+      <span class="hero-nav-label">文章</span>
+      <span class="hero-nav-arrow">→</span>
     </a>
-    <a href="mailto:hello@example.com" class="social-icon" title="Email">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+    <a href="/apps/" class="hero-nav-link">
+      <span class="hero-nav-label">应用</span>
+      <span class="hero-nav-arrow">→</span>
     </a>
-    <a href="https://twitter.com" target="_blank" class="social-icon" title="Twitter">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-    </a>
-    <a href="/rss.xml" class="social-icon" title="RSS">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+    <a href="/about/" class="hero-nav-link">
+      <span class="hero-nav-label">关于</span>
+      <span class="hero-nav-arrow">→</span>
     </a>
   </div>
 
-  <div class="scroll-line"></div>
+  <!-- Clock -->
+  <div class="hero-clock hero-line" id="heroClock">
+    <span id="clockDisplay">--:--:--</span>
+  </div>
 </section>

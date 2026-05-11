@@ -14,6 +14,12 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props;
 const { Content } = await article.render();
+
+const allArticles = await getCollection('articles');
+const related = allArticles
+  .filter(a => a.slug !== article.slug && a.data.tags?.some(t => article.data.tags?.includes(t)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 2);
 ---
 
 <BaseLayout title={article.data.title}>
@@ -38,6 +44,20 @@ const { Content } = await article.render();
       <div class="detail-content">
         <Content />
       </div>
+
+      {related.length > 0 && (
+        <div class="related-section">
+          <h3>相关文章</h3>
+          <div class="related-grid">
+            {related.map(r => (
+              <a href={`/articles/${r.slug}/`} class="related-card">
+                <h4>{r.data.title}</h4>
+                <p>{r.data.summary}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   </main>
   <Footer />

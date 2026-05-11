@@ -6,6 +6,8 @@ import { getCollection } from 'astro:content';
 
 const articles = (await getCollection('articles'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
 ---
 
 <BaseLayout title="文章">
@@ -19,9 +21,19 @@ const articles = (await getCollection('articles'))
 
       {articles.length > 0 ? (
         <section class="section" style="padding-top:20px;">
-          <div class="articles-grid">
+          <div class="tag-filter reveal">
+            <button class="tag-pill active" data-tag="all">全部</button>
+            {allTags.map(tag => (
+              <button class="tag-pill" data-tag={tag}>{tag}</button>
+            ))}
+          </div>
+          <div class="articles-grid" id="articles-grid">
             {articles.map(article => (
-              <a href={`/articles/${article.slug}/`} class="tilt-card article-card reveal">
+              <a
+                href={`/articles/${article.slug}/`}
+                class="tilt-card article-card reveal"
+                data-tags={JSON.stringify(article.data.tags || [])}
+              >
                 {article.data.tags && (
                   <div class="a-tags">
                     {article.data.tags.map(tag => (
@@ -48,3 +60,29 @@ const articles = (await getCollection('articles'))
   </main>
   <Footer />
 </BaseLayout>
+
+<script>
+  const pills = document.querySelectorAll('.tag-pill');
+  const cards = document.querySelectorAll<HTMLElement>('#articles-grid .article-card');
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const tag = (pill as HTMLElement).dataset.tag;
+      cards.forEach(card => {
+        const tags = JSON.parse(card.dataset.tags || '[]');
+        const show = tag === 'all' || tags.includes(tag);
+        card.style.display = show ? '' : 'none';
+        if (show) {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(12px)';
+          requestAnimationFrame(() => {
+            card.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          });
+        }
+      });
+    });
+  });
+</script>
