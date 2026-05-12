@@ -106,51 +106,7 @@ const { title } = Astro.props
       }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
       document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-      // Time-aware greeting
-      const greetEl = document.getElementById('timeGreeting');
-      if (greetEl) {
-        const h = new Date().getHours();
-        greetEl.textContent = h >= 5 && h < 12 ? '早上好'
-          : h >= 12 && h < 18 ? '下午好'
-          : h >= 18 && h < 22 ? '晚上好'
-          : '夜深了，注意休息';
-      }
-
-      // Hero text reveal + typewriter
-      document.querySelectorAll('.hero-line').forEach((el, i) => {
-        setTimeout(() => el.classList.add('is-visible'), 200 + i * 120);
-      });
-      const typeTarget = document.getElementById('typewriter');
-      const typeText = typeTarget?.parentElement?.dataset.typewriter;
-      if (typeTarget && typeText) {
-        setTimeout(() => {
-          let i = 0;
-          function type() {
-            if (i < typeText.length) {
-              typeTarget.textContent += typeText[i];
-              i++;
-              setTimeout(type, 60 + Math.random() * 40);
-            } else {
-              setTimeout(() => {
-                typeTarget.nextElementSibling?.classList.add('done');
-              }, 2000);
-            }
-          }
-          type();
-        }, 1200);
-      }
-
-      // Clock
-      const clockEl = document.getElementById('clockDisplay');
-      if (clockEl) {
-        function tick() {
-          clockEl.textContent = new Date().toLocaleTimeString('zh-CN', { hour12: false });
-        }
-        tick();
-        setInterval(tick, 1000);
-      }
-
-      // 3D tilt + glow
+      // 3D tilt + glow (for article/app cards)
       document.querySelectorAll('.tilt-card').forEach(card => {
         card.addEventListener('mousemove', e => {
           const rect = card.getBoundingClientRect();

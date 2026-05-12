@@ -121,101 +121,6 @@ img { max-width: 100%; display: block; }
 }
 .nav-links a:hover { color: var(--text-primary); }
 
-/* ===== Hero ===== */
-.hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-  text-align: center;
-  padding: 120px 32px 80px;
-  position: relative;
-  overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 600px 400px at 30% 40%, rgba(123,142,168,0.05), transparent),
-    radial-gradient(ellipse 500px 500px at 70% 60%, rgba(184,196,208,0.04), transparent);
-  pointer-events: none;
-}
-
-.hero-line {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
-}
-.hero-line.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.hero-greeting {
-  font-family: var(--font-sans);
-  font-size: 12px; color: var(--text-muted);
-  font-weight: 400; letter-spacing: 0.2em;
-  margin-bottom: 16px;
-}
-.hero-name {
-  font-size: clamp(40px, 7vw, 72px);
-  font-weight: 900; letter-spacing: -0.04em;
-  line-height: 1.1; margin-bottom: 16px;
-  color: var(--text-primary);
-}
-.hero-name .accent { color: var(--accent); }
-.hero-title {
-  font-size: 15px; color: var(--text-secondary);
-  font-weight: 300; margin-bottom: 24px;
-  max-width: 440px; line-height: 1.7;
-}
-.hero-tags {
-  display: flex; gap: 8px; justify-content: center;
-  flex-wrap: wrap; margin-bottom: 36px;
-}
-.hero-tags span {
-  font-family: var(--font-sans);
-  font-size: 12px; padding: 5px 16px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border);
-  color: var(--text-secondary); font-weight: 400;
-  transition: all 0.3s var(--ease);
-}
-.hero-tags span:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-light);
-}
-
-
-/* ===== Hero Nav Links ===== */
-.hero-nav {
-  display: flex; gap: 24px;
-  justify-content: center;
-  margin-bottom: 32px;
-}
-.hero-nav-link {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-sans);
-  font-size: 13px; font-weight: 400;
-  color: var(--text-muted);
-  padding: 8px 20px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border);
-  transition: all 0.3s var(--ease);
-}
-.hero-nav-link:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: var(--accent-light);
-}
-.hero-nav-arrow {
-  font-size: 14px;
-  transition: transform 0.3s var(--ease);
-}
-.hero-nav-link:hover .hero-nav-arrow {
-  transform: translateX(3px);
-}
-
 /* ===== Sections ===== */
 .section { padding: 100px 0; position: relative; z-index: 1; }
 .section-header { margin-bottom: 48px; }
@@ -468,21 +373,6 @@ img { max-width: 100%; display: block; }
   border-color: var(--accent); color: var(--accent); background: var(--accent-light);
 }
 
-/* ===== Typewriter ===== */
-.typewriter-cursor {
-  display: inline-block;
-  width: 2px; height: 1em;
-  background: var(--accent);
-  margin-left: 2px;
-  vertical-align: text-bottom;
-  animation: cursorBlink 0.8s step-end infinite;
-}
-.typewriter-cursor.done { opacity: 0; transition: opacity 0.6s; }
-@keyframes cursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
 /* ===== Reading Progress ===== */
 .reading-progress {
   position: fixed;
@@ -518,26 +408,6 @@ img { max-width: 100%; display: block; }
   box-shadow: var(--shadow-hover);
   transform: translateY(-2px);
 }
-
-/* ===== Hero Particles ===== */
-.hero-particles {
-  position: absolute; inset: 0;
-  overflow: hidden; pointer-events: none;
-}
-.hero-particle {
-  position: absolute;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.12;
-}
-
-@keyframes particleFloat {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(10px, -20px); }
-  50% { transform: translate(-8px, -35px); }
-  75% { transform: translate(12px, -15px); }
-}
-
 
 /* ===== Tag Filter ===== */
 .tag-filter {
@@ -638,26 +508,6 @@ img { max-width: 100%; display: block; }
 .screenshot-gallery img:hover {
   transform: scale(1.02);
   box-shadow: var(--shadow-hover);
-}
-
-/* ===== Time-Aware Greeting ===== */
-.hero-time-greeting {
-  font-family: var(--font-cn);
-  font-size: 14px;
-  color: var(--accent);
-  font-weight: 400;
-  margin-bottom: 10px;
-  letter-spacing: 0.05em;
-}
-
-/* ===== Hero Clock ===== */
-.hero-clock {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 28px;
-  letter-spacing: 0.15em;
-  opacity: 0.7;
 }
 
 /* ===== Music Player ===== */
