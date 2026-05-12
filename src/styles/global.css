@@ -186,17 +186,6 @@ img { max-width: 100%; display: block; }
   background: var(--accent-light);
 }
 
-.hero-social {
-  display: flex; gap: 12px; justify-content: center;
-}
-.social-icon {
-  width: 36px; height: 36px;
-  border-radius: var(--radius-sm);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-muted);
-  transition: all 0.3s var(--ease);
-}
-.social-icon:hover { color: var(--accent); transform: translateY(-2px); }
 
 /* ===== Hero Nav Links ===== */
 .hero-nav {
@@ -280,7 +269,6 @@ img { max-width: 100%; display: block; }
   display: flex; flex-direction: column;
   cursor: pointer;
 }
-.article-card.span-full { grid-column: 1 / -1; }
 .article-card .a-tags {
   display: flex; gap: 6px; flex-wrap: wrap;
   margin-bottom: 14px; position: relative; z-index: 2;
@@ -373,41 +361,6 @@ img { max-width: 100%; display: block; }
 }
 .app-btn.primary:hover { background: var(--accent-hover); }
 
-/* ===== Knowledge Cards ===== */
-.knowledge-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-.k-card {
-  padding: 30px 16px; text-align: center;
-  border-radius: var(--radius);
-  background: var(--bg-card); border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: all 0.4s var(--ease);
-}
-.k-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-}
-.k-card .k-icon { font-size: 28px; margin-bottom: 12px; display: block; }
-.k-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-primary); }
-.k-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
-
-/* ===== View All ===== */
-.view-all { display: flex; justify-content: center; margin-top: 40px; }
-.view-all a {
-  font-family: var(--font-sans);
-  padding: 10px 24px; border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  color: var(--text-secondary); font-size: 13px; font-weight: 400;
-  transition: all 0.3s var(--ease); background: var(--bg-card);
-}
-.view-all a:hover {
-  border-color: var(--accent); color: var(--accent);
-  background: var(--accent-light);
-}
 
 /* ===== Footer ===== */
 .site-footer {
@@ -514,12 +467,6 @@ img { max-width: 100%; display: block; }
 .about-tags span:hover {
   border-color: var(--accent); color: var(--accent); background: var(--accent-light);
 }
-.about-contact { display: flex; flex-direction: column; gap: 8px; }
-.about-contact a {
-  color: var(--accent); font-weight: 500; font-size: 14px;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.about-contact a:hover { opacity: 0.8; }
 
 /* ===== Typewriter ===== */
 .typewriter-cursor {
@@ -591,16 +538,6 @@ img { max-width: 100%; display: block; }
   75% { transform: translate(12px, -15px); }
 }
 
-/* ===== Knowledge Card Expand ===== */
-.k-desc {
-  max-height: 0; overflow: hidden;
-  transition: max-height 0.4s var(--ease), opacity 0.3s, margin 0.3s;
-  opacity: 0; margin-top: 0;
-  font-size: 12px; color: var(--text-muted); line-height: 1.6;
-}
-.k-card:hover .k-desc {
-  max-height: 60px; opacity: 1; margin-top: 6px;
-}
 
 /* ===== Tag Filter ===== */
 .tag-filter {
@@ -871,14 +808,11 @@ img { max-width: 100%; display: block; }
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
   .articles-grid { grid-template-columns: 1fr; }
-  .article-card.span-full { grid-column: 1; }
   .apps-grid { grid-template-columns: 1fr; }
-  .knowledge-grid { grid-template-columns: repeat(2, 1fr); }
   .detail-page { padding: 24px 24px 60px; }
   .detail-page h1 { font-size: 24px; }
 }
 @media (max-width: 560px) {
-  .knowledge-grid { grid-template-columns: 1fr 1fr; }
   .hero-name { font-size: 36px; }
   .navbar { padding: 14px 20px; }
   .navbar.scrolled { padding: 12px 20px; }
