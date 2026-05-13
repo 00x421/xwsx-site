@@ -123,23 +123,6 @@ img { max-width: 100%; display: block; }
 
 /* ===== Sections ===== */
 .section { padding: 100px 0; position: relative; z-index: 1; }
-.section-header { margin-bottom: 48px; }
-.section-num {
-  font-family: var(--font-sans);
-  font-size: 56px; font-weight: 800;
-  color: var(--border); line-height: 1;
-  letter-spacing: -0.04em;
-  display: block; margin-bottom: 8px;
-  user-select: none;
-}
-.section-header h2 {
-  font-size: 28px; font-weight: 700;
-  letter-spacing: -0.02em; margin-bottom: 6px;
-  color: var(--text-primary);
-}
-.section-header p {
-  font-size: 14px; color: var(--text-secondary); font-weight: 300;
-}
 
 /* ===== Tilt Cards ===== */
 .tilt-card {
@@ -274,9 +257,6 @@ img { max-width: 100%; display: block; }
   position: relative; z-index: 1;
 }
 .site-footer p { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-.footer-links { display: flex; gap: 20px; justify-content: center; }
-.footer-links a { font-size: 12px; color: var(--text-muted); transition: color 0.3s; }
-.footer-links a:hover { color: var(--text-primary); }
 
 /* ===== Detail Pages ===== */
 .page-main {
@@ -652,8 +632,7 @@ img { max-width: 100%; display: block; }
 .reveal-d1 { transition-delay: 0.06s; }
 .reveal-d2 { transition-delay: 0.12s; }
 .reveal-d3 { transition-delay: 0.18s; }
-.reveal-d4 { transition-delay: 0.24s; }
-.reveal-d5 { transition-delay: 0.30s; }
+
 
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
@@ -663,7 +642,6 @@ img { max-width: 100%; display: block; }
   .detail-page h1 { font-size: 24px; }
 }
 @media (max-width: 560px) {
-  .hero-name { font-size: 36px; }
   .navbar { padding: 14px 20px; }
   .navbar.scrolled { padding: 12px 20px; }
   .nav-links { gap: 18px; }
