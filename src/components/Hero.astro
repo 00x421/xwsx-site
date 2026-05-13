@@ -238,6 +238,8 @@
     z-index: 10;
     transform: translateZ(80px);
     pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .hero-3d > * { pointer-events: auto; }
 
@@ -331,6 +333,7 @@
     0%,100% { opacity:1; }
     50% { opacity:0; }
   }
+  .h3d-cursor.done { animation: none; opacity: 0; }
 
   .h3d-tags {
     display:flex; gap:8px; justify-content:center;
@@ -694,6 +697,17 @@
     cam.panY += (target.panY - cam.panY) * lerpSpeed;
     cam.zoom += (target.zoom - cam.zoom) * lerpSpeed;
 
+    // Gently pull back to default when idle
+    if (!isDragging) {
+      target.rotX += (DEFAULT.rotX - target.rotX) * 0.01;
+      target.panX += (DEFAULT.panX - target.panX) * 0.01;
+      target.panY += (DEFAULT.panY - target.panY) * 0.01;
+      target.zoom += (DEFAULT.zoom - target.zoom) * 0.01;
+      resetBtn?.classList.toggle('visible',
+        Math.abs(target.rotX) > 0.5 || Math.abs(target.panX) > 2 || Math.abs(target.panY) > 2 || Math.abs(target.zoom) > 2
+      );
+    }
+
     const pVal = 1200 - cam.zoom;
     document.body.style.perspective = pVal + 'px';
 
@@ -714,7 +728,6 @@
     geos.torus.style.marginLeft = -px * 1.3 + 'px'; geos.torus.style.marginTop = py * 1.3 + 'px';
 
     // ===== Content adaptation =====
-    const rotDist = Math.abs(cam.rotX);
     const zBase = 80 - cam.zoom * 0.3;
 
     if (h3dGreeting) h3dGreeting.style.transform = `translateZ(${zBase - 20}px) translateY(${cam.rotX * 0.2}px)`;
@@ -727,7 +740,6 @@
 
     if (hero3d) {
       hero3d.style.transform = `translateZ(${zBase}px) translate(${-cam.panX * 0.1}px, ${-cam.panY * 0.1}px)`;
-      hero3d.style.opacity = String(Math.max(0.2, 1 - rotDist / 60));
     }
 
     const baseZs = [0, -18, 12, -12, 24, -6];
@@ -786,13 +798,13 @@
 
   // ===== Greeting =====
   const h = new Date().getHours();
-  document.getElementById('h3dGreeting').textContent =
+  h3dGreeting.textContent =
     h >= 5 && h < 12 ? '早上好' : h >= 12 && h < 18 ? '下午好' : h >= 18 && h < 22 ? '晚上好' : '夜深了，注意休息';
 
   // ===== Clock =====
   function tick() {
     const d = new Date();
-    document.getElementById('h3dClock').textContent =
+    h3dClock.textContent =
       [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2, '0')).join(':');
   }
   setInterval(tick, 1000); tick();
