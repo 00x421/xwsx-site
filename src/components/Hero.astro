@@ -1,88 +1,37 @@
 ---
 ---
 
-{/* 3D Scene layer */}
-<div class="scene-3d" id="scene3d">
-  <div class="grid-floor" id="gridFloor"></div>
-  <div class="depth-line dl-v1"></div>
-  <div class="depth-line dl-v2"></div>
+{/* Three.js Canvas */}
+<canvas id="scene3d"></canvas>
 
-  <div class="geo geo-ring"></div>
-  <div class="geo geo-ring-2"></div>
-  <div class="geo geo-line"></div>
-  <div class="geo geo-line-2"></div>
-  <div class="geo geo-dot"></div>
-  <div class="geo geo-dot-2"></div>
-  <div class="geo geo-cross"></div>
-
-  <div class="geo geo-cube-wrap">
-    <div class="geo-cube-face"></div>
-    <div class="geo-cube-face"></div>
-    <div class="geo-cube-face"></div>
-    <div class="geo-cube-face"></div>
-    <div class="geo-cube-face"></div>
-    <div class="geo-cube-face"></div>
+{/* HTML Text Overlay */}
+<div class="hero-overlay" id="heroOverlay">
+  <p class="h3d-el h3d-greeting" id="h3dGreeting" data-pos="0,1.8,0"></p>
+  <p class="h3d-el h3d-sub" data-pos="0,1.3,0.4">Hello, I'm</p>
+  <div class="h3d-el h3d-chars" id="h3dChars" data-pos="0,0.3,-0.2">
+    <div class="char-wrap" data-idx="0"><span class="char-el">烦</span></div>
+    <div class="char-wrap" data-idx="1"><span class="char-el">恼</span></div>
+    <div class="char-wrap" data-idx="2"><span class="char-el">全</span></div>
+    <div class="char-wrap" data-idx="3"><span class="char-el char-outline">無</span></div>
+    <div class="char-wrap" data-idx="4"><span class="char-el">先</span></div>
+    <div class="char-wrap" data-idx="5"><span class="char-el">生</span></div>
   </div>
-
-  <div class="geo geo-torus-wrap">
-    <div class="geo-torus"></div>
-  </div>
-</div>
-
-{/* Hero content */}
-<section class="hero-3d" id="hero3d">
-  <p class="h3d-greeting" id="h3dGreeting"></p>
-  <p class="h3d-sub">Hello, I'm</p>
-
-  <div class="h3d-chars" id="h3dChars">
-    <div class="char-wrap" data-idx="0">
-      <span class="char-el">烦<span class="char-shadow">烦</span></span>
-    </div>
-    <div class="char-wrap" data-idx="1">
-      <span class="char-el">恼<span class="char-shadow">恼</span></span>
-    </div>
-    <div class="char-wrap" data-idx="2">
-      <span class="char-el">全<span class="char-shadow">全</span></span>
-    </div>
-    <div class="char-wrap" data-idx="3">
-      <span class="char-el char-outline">無<span class="char-shadow">無</span></span>
-    </div>
-    <div class="char-wrap" data-idx="4">
-      <span class="char-el">先<span class="char-shadow">先</span></span>
-    </div>
-    <div class="char-wrap" data-idx="5">
-      <span class="char-el">生<span class="char-shadow">生</span></span>
-    </div>
-  </div>
-
-  <p class="h3d-desc" data-typewriter="独立开发者 / 全栈工程师 · 专注效率工具与优雅数字产品"><span id="h3dType"></span><span class="h3d-cursor"></span></p>
-
-  <div class="h3d-tags">
+  <p class="h3d-el h3d-desc" id="h3dDesc" data-pos="0,-0.6,0.4" data-typewriter="独立开发者 / 全栈工程师 · 专注效率工具与优雅数字产品">
+    <span id="h3dType"></span><span class="h3d-cursor"></span>
+  </p>
+  <div class="h3d-el h3d-tags" data-pos="0,-1.3,0.8">
     <span class="h3d-tag">全栈开发</span>
     <span class="h3d-tag">独立开发</span>
     <span class="h3d-tag">效率工具</span>
     <span class="h3d-tag">开源</span>
   </div>
-
-  <div class="h3d-btns">
+  <div class="h3d-el h3d-btns" data-pos="0,-2.1,0.4">
     <a href="/articles/" class="h3d-btn">文章 →</a>
     <a href="/apps/" class="h3d-btn">应用 →</a>
     <a href="/about/" class="h3d-btn">关于 →</a>
   </div>
-
-  <div class="h3d-clock" id="h3dClock">--:--:--</div>
-</section>
-
-{/* Drag hint */}
-<div class="drag-hint" id="dragHint">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" opacity=".3"/><path d="M8 12l4-4 4 4M12 8v8"/></svg>
-  <span>拖动探索空间</span>
+  <div class="h3d-el h3d-clock" id="h3dClock" data-pos="0,-2.9,1.2">--:--:--</div>
 </div>
-
-{/* Reset view button */}
-<button class="reset-view" id="resetView" title="重置视角">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-</button>
 
 {/* Transparent lens */}
 <div class="lens" id="lens">
@@ -93,675 +42,592 @@
   </div>
 </div>
 
+{/* Drag hint */}
+<div class="drag-hint" id="dragHint">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10" opacity=".3"/><path d="M8 12l4-4 4 4M12 8v8"/></svg>
+  <span>拖动探索空间</span>
+</div>
+
+{/* Reset view */}
+<button class="reset-view" id="resetView" title="重置视角">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+</button>
+
 {/* Overlays */}
 <div class="vignette-overlay"></div>
 <div class="grain-overlay"></div>
 
 <style>
-  /* ===== 3D Scene ===== */
-  .scene-3d {
+  #scene3d {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+  }
+
+  /* ===== HTML Overlay ===== */
+  .hero-overlay {
     position: fixed;
     inset: 0;
-    transform-style: preserve-3d;
-    will-change: transform;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .grid-floor {
-    position: absolute;
-    inset: -50%;
-    width: 200%; height: 200%;
-    transform-style: preserve-3d;
-    transform: translateZ(-300px) rotateX(55deg);
-    background-image: radial-gradient(circle, var(--border-hover) 1px, transparent 1px);
-    background-size: 44px 44px;
-    opacity: 0.25;
-  }
-
-  .depth-line { position: absolute; pointer-events: none; z-index: 4; }
-  .dl-v1 { width:1px; height:180px; background:linear-gradient(to bottom,transparent,var(--border-hover),transparent); opacity:0.12; top:50%; left:20%; transform:translateZ(-100px); }
-  .dl-v2 { width:1px; height:140px; background:linear-gradient(to bottom,transparent,var(--border-hover),transparent); opacity:0.08; top:30%; right:25%; transform:translateZ(-150px); }
-
-  .geo { position: absolute; transform-style: preserve-3d; pointer-events: none; }
-
-  .geo-ring {
-    width:80px; height:80px;
-    border:1.5px solid var(--border-hover); border-radius:50%;
-    top:18%; left:10%;
-    animation: fA 8s ease-in-out infinite;
-    transform: translateZ(120px) rotateX(20deg) rotateY(-30deg);
-  }
-  .geo-ring::after { content:''; position:absolute; inset:10px; border:1px solid var(--border-hover); border-radius:50%; opacity:0.5; }
-
-  .geo-ring-2 {
-    width:44px; height:44px;
-    border:1px solid var(--border-hover); border-radius:50%;
-    bottom:22%; right:12%;
-    animation: fB 10s ease-in-out infinite;
-    transform: translateZ(80px) rotateX(-15deg) rotateY(40deg);
-  }
-
-  .geo-line {
-    width:90px; height:1px; background:var(--border-hover);
-    top:28%; right:8%; opacity:0.35;
-    transform:translateZ(60px) rotateZ(-25deg);
-    animation: fC 7s ease-in-out infinite;
-  }
-  .geo-line-2 {
-    width:60px; height:1px; background:var(--border-hover);
-    bottom:30%; left:14%; opacity:0.25;
-    transform:translateZ(100px) rotateZ(15deg);
-    animation: fA 9s ease-in-out infinite 1s;
-  }
-
-  .geo-dot {
-    width:4px; height:4px; background:var(--border-hover); border-radius:50%;
-    top:65%; left:7%; transform:translateZ(150px);
-    animation: fB 6s ease-in-out infinite .5s;
-  }
-  .geo-dot-2 {
-    width:3px; height:3px; background:var(--border-hover); border-radius:50%;
-    top:12%; right:22%; transform:translateZ(200px);
-    animation: fA 5s ease-in-out infinite 2s;
-  }
-
-  .geo-cross {
-    width:16px; height:16px;
-    bottom:18%; left:22%;
-    transform:translateZ(90px); opacity:0.25;
-    animation: fC 11s ease-in-out infinite .3s;
-  }
-  .geo-cross::before, .geo-cross::after { content:''; position:absolute; background:var(--border-hover); }
-  .geo-cross::before { width:100%; height:1px; top:50%; }
-  .geo-cross::after { width:1px; height:100%; left:50%; }
-
-  .geo-cube-wrap {
-    top:60%; right:6%; width:44px; height:44px;
-    transform-style: preserve-3d;
-    transform: translateZ(160px) rotateX(30deg) rotateY(45deg);
-    animation: spinCube 20s linear infinite;
-  }
-  .geo-cube-face {
-    position:absolute; width:44px; height:44px;
-    border:1px solid var(--border-hover); background:rgba(250,251,252,0.4);
-  }
-  .geo-cube-face:nth-child(1){transform:translateZ(22px)}
-  .geo-cube-face:nth-child(2){transform:translateZ(-22px)}
-  .geo-cube-face:nth-child(3){transform:rotateY(90deg) translateZ(22px)}
-  .geo-cube-face:nth-child(4){transform:rotateY(-90deg) translateZ(22px)}
-  .geo-cube-face:nth-child(5){transform:rotateX(90deg) translateZ(22px)}
-  .geo-cube-face:nth-child(6){transform:rotateX(-90deg) translateZ(22px)}
-
-  .geo-torus-wrap {
-    top:35%; right:18%; width:66px; height:66px;
-    transform-style: preserve-3d;
-    transform: translateZ(220px);
-    animation: floatTorus 12s ease-in-out infinite;
-  }
-  .geo-torus {
-    width:100%; height:100%;
-    border:1.5px solid rgba(123,142,168,0.12);
-    border-radius:50%; transform-style:preserve-3d;
-  }
-  .geo-torus::before { content:''; position:absolute; inset:12px; border:1px solid rgba(123,142,168,0.08); border-radius:50%; }
-  .geo-torus::after { content:''; position:absolute; inset:22px; border:1px solid rgba(123,142,168,0.05); border-radius:50%; }
-
-  @keyframes fA {
-    0%,100% { transform:translateZ(120px) rotateX(20deg) rotateY(-30deg) translateY(0); }
-    50%     { transform:translateZ(140px) rotateX(25deg) rotateY(-25deg) translateY(-16px); }
-  }
-  @keyframes fB {
-    0%,100% { transform:translateZ(80px) rotateX(-15deg) rotateY(40deg) translateY(0); }
-    50%     { transform:translateZ(100px) rotateX(-10deg) rotateY(45deg) translateY(12px); }
-  }
-  @keyframes fC {
-    0%,100% { transform:translateZ(60px) rotateZ(-25deg); }
-    50%     { transform:translateZ(80px) rotateZ(-20deg); }
-  }
-  @keyframes spinCube {
-    0%   { transform:translateZ(160px) rotateX(30deg) rotateY(0); }
-    100% { transform:translateZ(160px) rotateX(30deg) rotateY(360deg); }
-  }
-  @keyframes floatTorus {
-    0%,100% { transform:translateZ(220px); }
-    25%     { transform:translateZ(240px) rotateX(10deg) rotateY(15deg); }
-    50%     { transform:translateZ(200px) rotateX(-5deg) rotateY(30deg); }
-    75%     { transform:translateZ(230px) rotateX(8deg) rotateY(10deg); }
-  }
-
-  /* ===== Hero content ===== */
-  .hero-3d {
-    position: fixed; inset: 0;
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
     z-index: 10;
-    transform: translateZ(80px);
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
   }
-  .hero-3d > * { pointer-events: auto; }
+  .h3d-el {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: auto;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .h3d-el.revealed { opacity: 1; }
 
   .h3d-greeting {
-    font-size:12px; color:var(--text-muted); letter-spacing:0.2em;
-    margin-bottom:4px;
-    opacity:0; animation: h3dUp .7s ease forwards .15s;
+    font-size: 12px; color: var(--text-muted);
+    letter-spacing: 0.2em;
   }
   .h3d-sub {
-    font-size:11px; color:var(--text-muted); letter-spacing:0.25em;
-    text-transform:uppercase; margin-bottom:24px;
-    opacity:0; animation: h3dUp .7s ease forwards .25s;
+    font-size: 11px; color: var(--text-muted);
+    letter-spacing: 0.25em; text-transform: uppercase;
   }
-
   .h3d-chars {
-    display:flex; gap:2px;
-    margin-bottom:20px;
-    transform-style:preserve-3d;
-    opacity:0; animation:h3dUp .8s cubic-bezier(.23,1,.32,1) forwards .35s;
+    display: flex; gap: 2px;
   }
   .char-wrap {
-    transform-style:preserve-3d;
-    transition:transform .5s cubic-bezier(.23,1,.32,1);
-    cursor:default;
+    cursor: default;
+    transition: transform 0.5s cubic-bezier(.23,1,.32,1), filter 0.3s;
   }
-  .char-wrap:nth-child(1) { transform:translateZ(0px); }
-  .char-wrap:nth-child(2) { transform:translateZ(-18px); }
-  .char-wrap:nth-child(3) { transform:translateZ(12px); }
-  .char-wrap:nth-child(4) { transform:translateZ(-12px); }
-  .char-wrap:nth-child(5) { transform:translateZ(24px); }
-  .char-wrap:nth-child(6) { transform:translateZ(-6px); }
-
   .char-el {
-    font-size:clamp(42px,7vw,80px);
-    font-weight:900; color:var(--text-primary);
-    letter-spacing:-0.02em;
-    display:inline-block; position:relative;
-    transform-style:preserve-3d;
-    transition:all .5s cubic-bezier(.23,1,.32,1);
+    font-size: clamp(42px, 7vw, 80px);
+    font-weight: 900; color: var(--text-primary);
+    letter-spacing: -0.02em;
+    display: inline-block;
     text-shadow:
       0 1px 0 rgba(44,49,56,0.06),
       0 2px 0 rgba(44,49,56,0.04),
       0 4px 8px rgba(44,49,56,0.06);
   }
-  .char-shadow {
-    position:absolute; top:3px; left:2px;
-    font-size:inherit; font-weight:900;
-    color:rgba(123,142,168,0.06);
-    pointer-events:none;
-    transform:translateZ(-30px);
-  }
   .char-outline {
-    color:transparent;
-    -webkit-text-stroke:2px var(--accent);
-    text-shadow:none;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--accent);
+    text-shadow: none;
   }
-  .char-outline .char-shadow {
-    -webkit-text-stroke:0;
-    color:rgba(123,142,168,0.06);
-  }
-
   .char-wrap.lit .char-el {
-    color:var(--accent);
+    color: var(--accent);
     text-shadow:
       0 1px 0 rgba(123,142,168,0.1),
       0 2px 0 rgba(123,142,168,0.08),
       0 8px 20px rgba(123,142,168,0.15);
-    transform:translateZ(20px);
+    transform: scale(1.15);
   }
   .char-wrap.lit .char-outline {
-    color:transparent;
-    -webkit-text-stroke:2px var(--text-primary);
-    text-shadow:none;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--text-primary);
+    text-shadow: none;
   }
 
   .h3d-desc {
-    font-size:13px; color:var(--text-muted); letter-spacing:0.06em;
-    margin-bottom:28px;
-    opacity:0; animation:h3dUp .7s ease forwards .5s;
-    min-height:1.6em;
+    font-size: 13px; color: var(--text-muted);
+    letter-spacing: 0.06em;
+    min-height: 1.6em;
   }
   .h3d-cursor {
-    display:inline-block;
-    width:1.5px; height:1em;
-    background:var(--accent);
-    margin-left:1px;
-    vertical-align:text-bottom;
-    animation:h3dCursorBlink .8s step-end infinite;
-  }
-  @keyframes h3dCursorBlink {
-    0%,100% { opacity:1; }
-    50% { opacity:0; }
+    display: inline-block;
+    width: 1.5px; height: 1em;
+    background: var(--accent);
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    animation: cursorBlink .8s step-end infinite;
   }
   .h3d-cursor.done { animation: none; opacity: 0; }
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
 
   .h3d-tags {
-    display:flex; gap:8px; justify-content:center;
-    margin-bottom:32px;
-    opacity:0; animation:h3dUp .7s ease forwards .6s;
+    display: flex; gap: 8px; justify-content: center;
   }
   .h3d-tag {
-    padding:4px 14px; border:1px solid var(--border); border-radius:20px;
-    font-size:11px; color:var(--text-muted); background:transparent;
-    letter-spacing:0.04em; transition:all .3s;
+    padding: 4px 14px; border: 1px solid var(--border);
+    border-radius: 20px; font-size: 11px;
+    color: var(--text-muted); background: transparent;
+    letter-spacing: 0.04em; transition: all .3s;
   }
   .h3d-tag:hover {
-    border-color:var(--accent); color:var(--accent);
-    background:var(--accent-light);
+    border-color: var(--accent); color: var(--accent);
+    background: var(--accent-light);
   }
 
-  .h3d-btns {
-    display:flex; gap:12px; margin-bottom:40px;
-    opacity:0; animation:h3dUp .7s ease forwards .7s;
-  }
+  .h3d-btns { display: flex; gap: 12px; }
   .h3d-btn {
-    padding:7px 22px; border:1px solid var(--border); border-radius:24px;
-    font-size:12px; color:var(--text-muted); text-decoration:none;
-    letter-spacing:0.06em;
-    transition:all .35s cubic-bezier(.23,1,.32,1);
-    background:transparent;
+    padding: 7px 22px; border: 1px solid var(--border);
+    border-radius: 24px; font-size: 12px;
+    color: var(--text-muted); text-decoration: none;
+    letter-spacing: 0.06em; background: transparent;
+    transition: all .35s cubic-bezier(.23,1,.32,1);
   }
   .h3d-btn:hover {
-    border-color:var(--accent); color:var(--accent);
-    background:var(--accent-light);
-    box-shadow:0 6px 20px rgba(123,142,168,0.1);
+    border-color: var(--accent); color: var(--accent);
+    background: var(--accent-light);
+    box-shadow: 0 6px 20px rgba(123,142,168,0.1);
   }
 
   .h3d-clock {
-    font-size:11px; color:var(--border-hover); letter-spacing:0.25em;
-    opacity:0; animation:h3dUp .7s ease forwards .8s;
+    font-size: 11px; color: var(--border-hover);
+    letter-spacing: 0.25em;
   }
 
-  /* ===== Drag hint ===== */
-  .drag-hint {
-    position:fixed;
-    bottom:60px; left:50%;
-    transform:translateX(-50%);
-    z-index:100;
-    display:flex; align-items:center; gap:8px;
-    color:var(--text-muted);
-    font-size:11px; letter-spacing:0.1em;
-    opacity:0;
-    animation: h3dUp .7s ease forwards 1.5s;
-    transition: opacity .5s;
-  }
-  .drag-hint.hidden { opacity:0 !important; pointer-events:none; }
-  .drag-hint svg { opacity:0.5; }
-  .drag-hint span { opacity:0.6; }
-
-  /* ===== Reset view ===== */
-  .reset-view {
-    position:fixed;
-    bottom:32px; right:32px;
-    width:36px; height:36px;
-    border-radius:50%;
-    background:var(--bg-card);
-    border:1px solid var(--border);
-    box-shadow:var(--shadow);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--text-muted);
-    cursor:pointer;
-    z-index:100;
-    opacity:0; transform:translateY(8px);
-    transition:all .4s var(--ease);
-  }
-  .reset-view.visible { opacity:1; transform:translateY(0); }
-  .reset-view:hover { color:var(--accent); border-color:var(--accent); }
-
-  /* ===== Transparent lens ===== */
+  /* ===== Lens ===== */
   .lens {
-    position:fixed;
-    width:200px; height:200px;
-    border-radius:50%;
-    pointer-events:none;
-    z-index:50;
-    transform:translate(-50%,-50%) translateZ(180px);
-    border:1.5px solid rgba(123,142,168,0.25);
-    background:radial-gradient(circle,rgba(250,251,252,0.2),rgba(250,251,252,0.08));
-    backdrop-filter:blur(2px);
+    position: fixed;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 50;
+    transform: translate(-50%, -50%);
+    border: 1.5px solid rgba(123,142,168,0.25);
+    background: radial-gradient(circle, rgba(250,251,252,0.2), rgba(250,251,252,0.08));
+    backdrop-filter: blur(2px);
     box-shadow:
       0 0 0 1px rgba(123,142,168,0.05),
       0 20px 60px rgba(123,142,168,0.1),
       inset 0 0 40px rgba(250,251,252,0.15);
-    overflow:hidden;
-    opacity:0;
-    transition:opacity .4s cubic-bezier(.23,1,.32,1);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .4s cubic-bezier(.23,1,.32,1);
   }
-  .lens.visible { opacity:1; }
+  .lens.visible { opacity: 1; }
   .lens::before {
-    content:''; position:absolute; inset:0; border-radius:50%;
-    background:radial-gradient(ellipse at 35% 30%,rgba(255,255,255,0.2),transparent 60%);
-    z-index:5;
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: radial-gradient(ellipse at 35% 30%, rgba(255,255,255,0.2), transparent 60%);
+    z-index: 5;
   }
-  .lens::after {
-    content:''; position:absolute; inset:0; border-radius:50%;
-    border:1px solid rgba(255,255,255,0.15);
-  }
-
   .lens-content {
-    position:absolute; inset:0;
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-    gap:0; z-index:10;
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 10;
   }
   .lens-t1, .lens-t2 {
-    color:var(--text-primary);
-    font-size:22px; font-weight:700;
-    letter-spacing:0.04em; line-height:1.3;
-    opacity:0; transform:translateY(8px);
-    transition:all .4s cubic-bezier(.23,1,.32,1);
-    white-space:nowrap;
+    color: var(--text-primary);
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 0.04em; line-height: 1.3;
+    opacity: 0; transform: translateY(8px);
+    transition: all .4s cubic-bezier(.23,1,.32,1);
+    white-space: nowrap;
   }
-  .lens-t2 { transition-delay:.06s; }
+  .lens-t2 { transition-delay: .06s; }
   .lens-sub {
-    color:var(--text-muted);
-    font-size:10px; letter-spacing:0.18em;
-    opacity:0; transform:translateY(6px);
-    transition:all .5s cubic-bezier(.23,1,.32,1) .12s;
+    color: var(--text-muted);
+    font-size: 10px; letter-spacing: 0.18em;
+    opacity: 0; transform: translateY(6px);
+    transition: all .5s cubic-bezier(.23,1,.32,1) .12s;
   }
-  .lens.active .lens-t1,
-  .lens.active .lens-t2 {
-    opacity:1; transform:translateY(0);
+  .lens.active .lens-t1, .lens.active .lens-t2 {
+    opacity: 1; transform: translateY(0);
   }
   .lens.active .lens-sub {
-    opacity:.6; transform:translateY(0);
+    opacity: .6; transform: translateY(0);
   }
+
+  /* ===== Drag hint ===== */
+  .drag-hint {
+    position: fixed; bottom: 60px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text-muted);
+    font-size: 11px; letter-spacing: 0.1em;
+    opacity: 0;
+    animation: fadeIn .7s ease forwards 1.5s;
+    transition: opacity .5s;
+  }
+  .drag-hint.hidden { opacity: 0 !important; pointer-events: none; }
+  .drag-hint svg { opacity: 0.5; }
+  .drag-hint span { opacity: 0.6; }
+
+  /* ===== Reset view ===== */
+  .reset-view {
+    position: fixed; bottom: 32px; right: 32px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-card); border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); cursor: pointer;
+    z-index: 100;
+    opacity: 0; transform: translateY(8px);
+    transition: all .4s var(--ease);
+  }
+  .reset-view.visible { opacity: 1; transform: translateY(0); }
+  .reset-view:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ===== Overlays ===== */
   .vignette-overlay {
-    position:fixed; inset:0; z-index:8999;
-    pointer-events:none;
-    background:radial-gradient(ellipse at center,transparent 55%,rgba(123,142,168,0.04) 100%);
+    position: fixed; inset: 0; z-index: 8999;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(123,142,168,0.04) 100%);
   }
   .grain-overlay {
-    position:fixed; inset:0; z-index:9000;
-    pointer-events:none; opacity:0.02;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size:128px 128px;
+    position: fixed; inset: 0; z-index: 9000;
+    pointer-events: none; opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
   }
 
-  @keyframes h3dUp {
-    from { opacity:0; transform:translateY(24px); }
-    to   { opacity:1; transform:translateY(0); }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(24px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 </style>
 
 <script>
-  // ===== Per-character content =====
-  const charContent = [
-    { t1:'喜欢', t2:'折腾的技术人', s:'烦' },
-    { t1:'用代码', t2:'解决每一个难题', s:'恼' },
-    { t1:'全栈开发', t2:'前后端通吃', s:'全' },
-    { t1:'追求极简', t2:'与优雅的设计', s:'無' },
-    { t1:'独立开发', t2:'者的先行者', s:'先' },
-    { t1:'用产品', t2:'说话的生活家', s:'生' },
-  ];
+  import * as THREE from 'three';
 
-  // ===== DOM refs =====
-  const scene = document.getElementById('scene3d');
-  const gridFloor = document.getElementById('gridFloor');
+  // ===== Constants =====
+  const ACCENT = 0x7b8ea8;
+  const BG = 0xfafbfc;
+  const DEFAULT_CAM = new THREE.Vector3(0, 0, 8);
+
+  // ===== DOM Refs =====
+  const canvas = document.getElementById('scene3d') as HTMLCanvasElement;
   const lens = document.getElementById('lens');
   const lt1 = document.getElementById('lt1');
   const lt2 = document.getElementById('lt2');
   const ls = document.getElementById('ls');
-  const chars = document.querySelectorAll('.char-wrap');
-  const nav = document.querySelector('.navbar');
   const dragHint = document.getElementById('dragHint');
   const resetBtn = document.getElementById('resetView');
-  const hero3d = document.getElementById('hero3d');
+  const h3dGreeting = document.getElementById('h3dGreeting');
+  const h3dClock = document.getElementById('h3dClock');
+  const h3dType = document.getElementById('h3dType');
+  const h3dDescEl = document.getElementById('h3dDesc');
+  const charWraps = document.querySelectorAll('.char-wrap');
 
-  const geos = {
-    ring: document.querySelector('.geo-ring'),
-    ring2: document.querySelector('.geo-ring-2'),
-    line1: document.querySelector('.geo-line'),
-    line2: document.querySelector('.geo-line-2'),
-    cube: document.querySelector('.geo-cube-wrap'),
-    torus: document.querySelector('.geo-torus-wrap'),
-  };
+  // Text nodes for 3D projection
+  const textNodes: { el: HTMLElement; worldPos: THREE.Vector3 }[] = [];
+  document.querySelectorAll<HTMLElement>('.h3d-el').forEach(el => {
+    const p = el.dataset.pos;
+    if (!p) return;
+    const [x, y, z] = p.split(',').map(Number);
+    textNodes.push({ el, worldPos: new THREE.Vector3(x, y, z) });
+  });
 
-  // ===== Body setup =====
+  // ===== Three.js Setup =====
   document.body.style.overflow = 'hidden';
-  document.body.style.height = '100vh';
-  document.body.style.width = '100vw';
-  document.body.style.perspective = '1200px';
-  document.body.style.perspectiveOrigin = '50% 50%';
-  if (nav) nav.style.transform = 'translateZ(60px)';
 
-  // ===== Camera state =====
-  const DEFAULT = { rotX: 0, panX: 0, panY: 0, zoom: 0 };
-  let cam = { ...DEFAULT };
-  let target = { ...DEFAULT };
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(BG, 0.032);
 
+  const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100);
+  camera.position.copy(DEFAULT_CAM);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setClearColor(BG, 1);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+  dirLight.position.set(5, 5, 5);
+  scene.add(dirLight);
+
+  // ===== Materials =====
+  const wireMat = (opacity = 0.15) =>
+    new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity, wireframe: true });
+  const lineMat = (opacity = 0.2) =>
+    new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity });
+
+  // ===== Scene Objects =====
+  // Torus 1 — large ring, left-upper-far
+  const torus1 = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.025, 16, 100), wireMat(0.12));
+  torus1.position.set(-4, 2, -3);
+  scene.add(torus1);
+
+  // Torus 2 — small ring, right-lower-near
+  const torus2 = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.02, 16, 64), wireMat(0.1));
+  torus2.position.set(3.5, -1.5, 1);
+  scene.add(torus2);
+
+  // Wireframe cube — far right
+  const cubeEdges = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)),
+    lineMat(0.12)
+  );
+  cubeEdges.position.set(5, 0.5, -5);
+  scene.add(cubeEdges);
+
+  // Octahedron — left-near
+  const octa = new THREE.Mesh(new THREE.OctahedronGeometry(0.5), wireMat(0.1));
+  octa.position.set(-3.5, -0.5, 3);
+  scene.add(octa);
+
+  // Icosahedron — far upper
+  const ico = new THREE.Mesh(new THREE.IcosahedronGeometry(0.8), wireMat(0.08));
+  ico.position.set(2, 3, -7);
+  scene.add(ico);
+
+  // Dodecahedron — left-lower-near
+  const dodec = new THREE.Mesh(new THREE.DodecahedronGeometry(0.4), wireMat(0.1));
+  dodec.position.set(-2, -2, 2);
+  scene.add(dodec);
+
+  // Decorative line segments
+  [[[-6,1,-2],[-4,1.5,-1]],[[4,-2,0],[5.5,-1,1]],[[-1,3,-4],[1,3.2,-3]]].forEach(pts => {
+    const geo = new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(...p)));
+    scene.add(new THREE.Line(geo, lineMat(0.12)));
+  });
+
+  // Small spheres (dots)
+  const dotGeo = new THREE.SphereGeometry(0.04, 8, 8);
+  [[-1,3,1],[5,-2,-3],[-5,-1,2],[2,2.5,-1],[-3,0,4],[4,1,2],[0,-3,-2],[3,-3,3]].forEach(pos => {
+    const dot = new THREE.Mesh(dotGeo, wireMat(0.3));
+    dot.position.set(...pos);
+    scene.add(dot);
+  });
+
+  // Grid floor
+  const grid = new THREE.GridHelper(40, 40, ACCENT, ACCENT);
+  grid.position.y = -3.5;
+  (grid.material as THREE.Material).transparent = true;
+  (grid.material as THREE.Material).opacity = 0.06;
+  scene.add(grid);
+
+  // Particle field
+  const PARTICLE_COUNT = 200;
+  const pPos = new Float32Array(PARTICLE_COUNT * 3);
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    pPos[i * 3]     = (Math.random() - 0.5) * 30;
+    pPos[i * 3 + 1] = (Math.random() - 0.5) * 20;
+    pPos[i * 3 + 2] = (Math.random() - 0.5) * 30;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
+    color: ACCENT, size: 0.04, transparent: true, opacity: 0.5, sizeAttenuation: true,
+  }));
+  scene.add(particles);
+
+  // ===== Camera Controls =====
+  const targetPos = DEFAULT_CAM.clone();
   let isDragging = false;
-  let dragType: 'orbit' | 'pan' = 'orbit';
-  let dragStartX = 0, dragStartY = 0;
-  let dragStartRX = 0;
-  let dragStartPX = 0, dragStartPY = 0;
-  let velRX = 0, velRY = 0;
-  let lastMX = 0, lastMY = 0;
-  let lastDragTime = 0;
   let hasDragged = false;
-
+  let dragStartX = 0, dragStartY = 0;
+  let dragStartPX = 0, dragStartPY = 0;
   let mx = innerWidth / 2, my = innerHeight / 2;
-  let cx = mx, cy = my;
+  let lensX = mx, lensY = my;
   let activeIdx = -1;
 
-  // ===== Drag — on document =====
   function isInteractive(el: HTMLElement) {
     return !!el.closest('a, button, input, .music-player');
   }
+  function clampCam(pos: THREE.Vector3) {
+    pos.x = THREE.MathUtils.clamp(pos.x, -6, 6);
+    pos.y = THREE.MathUtils.clamp(pos.y, -4, 4);
+    pos.z = THREE.MathUtils.clamp(pos.z, 3, 14);
+  }
 
+  // Mouse drag — translate camera in X/Y
   document.addEventListener('mousedown', e => {
     if (isInteractive(e.target as HTMLElement)) return;
-    if (isDragging) return; // prevent double-start
-    isDragging = true;
-    hasDragged = false;
-    dragType = e.shiftKey ? 'pan' : 'orbit';
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    dragStartRX = target.rotX;
-    dragStartPX = target.panX;
-    dragStartPY = target.panY;
-    lastMX = e.clientX;
-    lastMY = e.clientY;
-    lastDragTime = Date.now();
+    isDragging = true; hasDragged = false;
+    dragStartX = e.clientX; dragStartY = e.clientY;
+    dragStartPX = targetPos.x; dragStartPY = targetPos.y;
   });
-
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartX, dy = e.clientY - dragStartY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
+    targetPos.x = dragStartPX - dx * 0.015;
+    targetPos.y = dragStartPY + dy * 0.015;
+    clampCam(targetPos);
+  });
+  document.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
+    if (hasDragged && dragHint) dragHint.classList.add('hidden');
+  });
   document.addEventListener('contextmenu', e => {
     if (!isInteractive(e.target as HTMLElement)) e.preventDefault();
   });
 
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-    if (!isDragging) return;
-
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
-
-    if (dragType === 'orbit') {
-      target.rotX = dragStartRX - dy * 0.12;
-      target.rotX = Math.max(-35, Math.min(35, target.rotX));
-    } else {
-      target.panX = dragStartPX + dx * 0.6;
-      target.panY = dragStartPY + dy * 0.6;
-    }
-
-    const now = Date.now();
-    const dt = Math.max(now - lastDragTime, 1);
-    velRX = (e.clientX - lastMX) / dt * 16;
-    velRY = (e.clientY - lastMY) / dt * 16;
-    lastMX = e.clientX;
-    lastMY = e.clientY;
-    lastDragTime = now;
-  });
-
-  document.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-
-    if (dragType === 'orbit') {
-      target.rotX -= velRY * 0.12 * 5;
-      target.rotX = Math.max(-35, Math.min(35, target.rotX));
-    } else {
-      target.panX += velRX * 0.6 * 3;
-      target.panY += velRY * 0.6 * 3;
-    }
-
-    const changed = Math.abs(target.rotX) > 2
-      || Math.abs(target.panX) > 10 || Math.abs(target.panY) > 10;
-    resetBtn?.classList.toggle('visible', changed);
-
-    if (hasDragged && dragHint) dragHint.classList.add('hidden');
-  });
+  // Scroll — move camera forward/backward
+  document.addEventListener('wheel', e => {
+    if (isInteractive(e.target as HTMLElement)) return;
+    e.preventDefault();
+    targetPos.z += e.deltaY * 0.008;
+    clampCam(targetPos);
+    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
+  }, { passive: false });
 
   // Touch
-  let touchStartDist = 0, touchStartZoom = 0;
-
+  let touchStartDist = 0, touchStartZ = 0;
   document.addEventListener('touchstart', e => {
     if (isInteractive(e.target as HTMLElement)) return;
     if (e.touches.length === 1) {
       const t = e.touches[0];
       isDragging = true; hasDragged = false;
-      dragType = 'orbit';
       dragStartX = t.clientX; dragStartY = t.clientY;
-      dragStartRX = target.rotX;
-      dragStartPX = target.panX; dragStartPY = target.panY;
-      lastMX = t.clientX; lastMY = t.clientY;
-      lastDragTime = Date.now();
+      dragStartPX = targetPos.x; dragStartPY = targetPos.y;
     } else if (e.touches.length === 2) {
       touchStartDist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
-      touchStartZoom = target.zoom;
+      touchStartZ = targetPos.z;
     }
   }, { passive: true });
-
   document.addEventListener('touchmove', e => {
     if (e.touches.length === 1 && isDragging) {
       const t = e.touches[0];
       mx = t.clientX; my = t.clientY;
       const dx = t.clientX - dragStartX, dy = t.clientY - dragStartY;
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
-      target.rotX = dragStartRX - dy * 0.12;
-      target.rotX = Math.max(-35, Math.min(35, target.rotX));
+      targetPos.x = dragStartPX - dx * 0.015;
+      targetPos.y = dragStartPY + dy * 0.015;
+      clampCam(targetPos);
     } else if (e.touches.length === 2) {
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
-      target.zoom = Math.max(-200, Math.min(200, touchStartZoom + (1 - dist / touchStartDist) * 200));
+      targetPos.z = touchStartZ + (touchStartDist - dist) * 0.02;
+      clampCam(targetPos);
     }
   }, { passive: true });
-
   document.addEventListener('touchend', () => {
     if (!isDragging) return;
     isDragging = false;
-    const changed = Math.abs(target.rotX) > 2 || Math.abs(target.zoom) > 10;
-    resetBtn?.classList.toggle('visible', changed);
+    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
     if (hasDragged && dragHint) dragHint.classList.add('hidden');
   });
 
-  // Scroll to zoom
-  document.addEventListener('wheel', e => {
-    if (isInteractive(e.target as HTMLElement)) return;
-    e.preventDefault();
-    target.zoom += e.deltaY * 0.3;
-    target.zoom = Math.max(-200, Math.min(200, target.zoom));
-    const changed = Math.abs(target.rotX) > 2 || Math.abs(target.zoom) > 10;
-    resetBtn?.classList.toggle('visible', changed);
-  }, { passive: false });
-
   // Reset
   resetBtn?.addEventListener('click', () => {
-    target = { ...DEFAULT };
+    targetPos.copy(DEFAULT_CAM);
     resetBtn.classList.remove('visible');
   });
 
-  // ===== DOM refs for content layers =====
-  const h3dGreeting = document.getElementById('h3dGreeting');
-  const h3dSub = document.querySelector('.h3d-sub') as HTMLElement;
-  const h3dChars = document.getElementById('h3dChars');
-  const h3dDesc = document.querySelector('.h3d-desc') as HTMLElement;
-  const h3dTags = document.querySelector('.h3d-tags') as HTMLElement;
-  const h3dBtns = document.querySelector('.h3d-btns') as HTMLElement;
-  const h3dClock = document.getElementById('h3dClock');
+  // Resize
+  window.addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
 
-  // ===== Animate =====
-  function animate() {
-    const lerpSpeed = isDragging ? 0.2 : 0.06;
-    cam.rotX += (target.rotX - cam.rotX) * lerpSpeed;
-    cam.panX += (target.panX - cam.panX) * lerpSpeed;
-    cam.panY += (target.panY - cam.panY) * lerpSpeed;
-    cam.zoom += (target.zoom - cam.zoom) * lerpSpeed;
+  // ===== Text Projection =====
+  const _projVec = new THREE.Vector3();
+  function updateProjection() {
+    const w = innerWidth, h = innerHeight;
+    textNodes.forEach(({ el, worldPos }) => {
+      _projVec.copy(worldPos).project(camera);
+      if (_projVec.z > 1) { el.style.opacity = '0'; el.style.pointerEvents = 'none'; return; }
 
-    // Gently pull back to default when idle
-    if (!isDragging) {
-      target.rotX += (DEFAULT.rotX - target.rotX) * 0.01;
-      target.panX += (DEFAULT.panX - target.panX) * 0.01;
-      target.panY += (DEFAULT.panY - target.panY) * 0.01;
-      target.zoom += (DEFAULT.zoom - target.zoom) * 0.01;
-      resetBtn?.classList.toggle('visible',
-        Math.abs(target.rotX) > 0.5 || Math.abs(target.panX) > 2 || Math.abs(target.panY) > 2 || Math.abs(target.zoom) > 2
-      );
-    }
+      const sx = (_projVec.x * 0.5 + 0.5) * w;
+      const sy = (-_projVec.y * 0.5 + 0.5) * h;
+      const dist = camera.position.distanceTo(worldPos);
+      const defaultDist = DEFAULT_CAM.distanceTo(worldPos);
+      const scale = THREE.MathUtils.clamp(defaultDist / dist, 0.4, 2.5);
 
-    const pVal = 1200 - cam.zoom;
-    document.body.style.perspective = pVal + 'px';
-
-    scene.style.transform = `rotateX(${cam.rotX}deg) translate(${cam.panX}px, ${cam.panY}px)`;
-
-    const nx = (mx / innerWidth - 0.5) * 2;
-    const ny = (my / innerHeight - 0.5) * 2;
-    document.body.style.perspectiveOrigin = `${50 + nx * 5}% ${50 + ny * 3}%`;
-
-    gridFloor.style.transform = `translateZ(-300px) rotateX(55deg)`;
-
-    const px = nx * 20, py = ny * 15;
-    geos.ring.style.marginLeft = px * 1.2 + 'px'; geos.ring.style.marginTop = py * 1.2 + 'px';
-    geos.ring2.style.marginLeft = -px * 1.5 + 'px'; geos.ring2.style.marginTop = -py * 1.5 + 'px';
-    geos.line1.style.marginLeft = px * 0.6 + 'px';
-    geos.line2.style.marginLeft = -px + 'px';
-    geos.cube.style.marginLeft = px * 2 + 'px'; geos.cube.style.marginTop = -py * 1.5 + 'px';
-    geos.torus.style.marginLeft = -px * 1.3 + 'px'; geos.torus.style.marginTop = py * 1.3 + 'px';
-
-    // ===== Content adaptation =====
-    const zBase = 80 - cam.zoom * 0.3;
-
-    if (h3dGreeting) h3dGreeting.style.transform = `translateZ(${zBase - 20}px) translateY(${cam.rotX * 0.2}px)`;
-    if (h3dSub) h3dSub.style.transform = `translateZ(${zBase - 10}px) translateY(${cam.rotX * 0.25}px)`;
-    if (h3dChars) h3dChars.style.transform = `translateZ(${zBase + 10}px) translateY(${cam.rotX * 0.3}px)`;
-    if (h3dDesc) h3dDesc.style.transform = `translateZ(${zBase - 5}px) translateY(${cam.rotX * 0.35}px)`;
-    if (h3dTags) h3dTags.style.transform = `translateZ(${zBase - 15}px) translateY(${cam.rotX * 0.4}px)`;
-    if (h3dBtns) h3dBtns.style.transform = `translateZ(${zBase - 25}px) translateY(${cam.rotX * 0.45}px)`;
-    if (h3dClock) h3dClock.style.transform = `translateZ(${zBase - 35}px) translateY(${cam.rotX * 0.5}px)`;
-
-    if (hero3d) {
-      hero3d.style.transform = `translateZ(${zBase}px) translate(${-cam.panX * 0.1}px, ${-cam.panY * 0.1}px)`;
-    }
-
-    const baseZs = [0, -18, 12, -12, 24, -6];
-    chars.forEach((w, i) => {
-      const charNx = Math.sin(i * 1.2 + mx * 0.002) * 6;
-      const charNy = Math.cos(i * 0.8 + my * 0.002) * 4;
-      const parallaxY = cam.rotX * (baseZs[i] / 30) * 1.0;
-      w.style.transform = `translateZ(${baseZs[i]}px) translate(${charNx}px, ${charNy + parallaxY}px)`;
-      w.classList.remove('lit');
+      el.style.left = sx + 'px';
+      el.style.top = sy + 'px';
+      el.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      el.style.opacity = el.classList.contains('revealed')
+        ? String(THREE.MathUtils.clamp(scale, 0.3, 1))
+        : '0';
+      el.style.pointerEvents = 'auto';
     });
+  }
 
-    // Lens
+  // ===== Staggered Reveal =====
+  const revealMap: Record<string, number> = {
+    'h3dGreeting': 150, 'h3d-sub': 250, 'h3dChars': 350,
+    'h3dDesc': 500, 'h3d-tags': 600, 'h3d-btns': 700, 'h3dClock': 800,
+  };
+  textNodes.forEach(({ el }) => {
+    const id = el.id || [...el.classList].find(c => revealMap[c]) || '';
+    const delay = revealMap[id] || 400;
+    setTimeout(() => el.classList.add('revealed'), delay);
+  });
+
+  // ===== Character Lens Content =====
+  const charContent = [
+    { t1: '喜欢', t2: '折腾的技术人', s: '烦' },
+    { t1: '用代码', t2: '解决每一个难题', s: '恼' },
+    { t1: '全栈开发', t2: '前后端通吃', s: '全' },
+    { t1: '追求极简', t2: '与优雅的设计', s: '無' },
+    { t1: '独立开发', t2: '者的先行者', s: '先' },
+    { t1: '用产品', t2: '说话的生活家', s: '生' },
+  ];
+
+  // ===== Animation Loop =====
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = performance.now() * 0.001;
+
+    // Auto-reset when idle
+    if (!isDragging) targetPos.lerp(DEFAULT_CAM, 0.01);
+
+    // Camera lerp
+    camera.position.lerp(targetPos, 0.08);
+
+    // Subtle look-at following mouse
+    camera.lookAt(
+      (mx / innerWidth - 0.5) * 0.3,
+      -(my / innerHeight - 0.5) * 0.2,
+      0
+    );
+
+    // Animate geometries
+    torus1.rotation.x = t * 0.15;
+    torus1.rotation.y = t * 0.1;
+    torus1.position.y = 2 + Math.sin(t * 0.5) * 0.3;
+
+    torus2.rotation.x = -t * 0.2;
+    torus2.rotation.z = t * 0.15;
+    torus2.position.y = -1.5 + Math.sin(t * 0.7 + 1) * 0.2;
+
+    cubeEdges.rotation.x = t * 0.3;
+    cubeEdges.rotation.y = t * 0.2;
+    cubeEdges.position.y = 0.5 + Math.sin(t * 0.4) * 0.15;
+
+    octa.rotation.y = t * 0.25;
+    octa.position.y = -0.5 + Math.sin(t * 0.6 + 2) * 0.25;
+
+    ico.rotation.x = t * 0.1;
+    ico.rotation.z = t * 0.15;
+    ico.position.y = 3 + Math.sin(t * 0.3) * 0.2;
+
+    dodec.rotation.x = t * 0.3;
+    dodec.rotation.y = t * 0.2;
+    dodec.position.y = -2 + Math.sin(t * 0.5 + 3) * 0.15;
+
+    // Particle drift
+    const pArr = particles.geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      pArr[i * 3 + 1] += Math.sin(t + i * 0.1) * 0.0005;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
+
+    // Update text projection
+    updateProjection();
+
+    // Update reset button
+    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
+
+    // ===== Lens on character hover =====
     let anyLit = false;
-    if (!isDragging && Math.abs(cam.rotX) < 15) {
+    if (!isDragging) {
       const hovered = document.elementFromPoint(mx, my);
-      const charWrap = hovered ? hovered.closest('.char-wrap') : null;
-
+      const charWrap = hovered ? (hovered as HTMLElement).closest('.char-wrap') : null;
       if (charWrap) {
         const idx = parseInt((charWrap as HTMLElement).dataset.idx || '0');
+        charWraps.forEach(w => w.classList.remove('lit'));
         charWrap.classList.add('lit');
-        charWrap.style.transform = `translateZ(${baseZs[idx] + 30}px)`;
-
         if (activeIdx !== idx) {
           activeIdx = idx;
           const c = charContent[idx];
@@ -769,31 +635,26 @@
           lt2.textContent = c.t2;
           ls.textContent = c.s;
         }
-
         lens.classList.add('visible');
         lens.classList.add('active');
-        cx += (mx - cx) * 0.1;
-        cy += (my - cy) * 0.1;
-        lens.style.left = cx + 'px';
-        lens.style.top = cy + 'px';
+        lensX += (mx - lensX) * 0.12;
+        lensY += (my - lensY) * 0.12;
+        lens.style.left = lensX + 'px';
+        lens.style.top = lensY + 'px';
         document.body.style.cursor = 'none';
         anyLit = true;
       }
     }
-
     if (!anyLit) {
       lens.classList.remove('visible');
       lens.classList.remove('active');
+      charWraps.forEach(w => w.classList.remove('lit'));
       document.body.style.cursor = isDragging ? 'grabbing' : '';
       activeIdx = -1;
     }
 
-    lt1.style.transform = `rotateY(${nx * 5}deg)`;
-    lt2.style.transform = `rotateY(${nx * 5}deg)`;
-
-    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
   }
-
   animate();
 
   // ===== Greeting =====
@@ -807,23 +668,21 @@
     h3dClock.textContent =
       [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2, '0')).join(':');
   }
-  setInterval(tick, 1000); tick();
+  setInterval(tick, 1000);
+  tick();
 
   // ===== Typewriter =====
-  const typeTarget = document.getElementById('h3dType');
-  const typeText = typeTarget?.parentElement?.dataset.typewriter;
-  if (typeTarget && typeText) {
+  const typeText = h3dDescEl?.dataset.typewriter;
+  if (h3dType && typeText) {
     setTimeout(() => {
       let i = 0;
       function type() {
         if (i < typeText.length) {
-          typeTarget.textContent += typeText[i];
+          h3dType.textContent += typeText[i];
           i++;
           setTimeout(type, 60 + Math.random() * 40);
         } else {
-          setTimeout(() => {
-            typeTarget.nextElementSibling?.classList.add('done');
-          }, 2000);
+          setTimeout(() => h3dType.nextElementSibling?.classList.add('done'), 2000);
         }
       }
       type();
@@ -831,7 +690,5 @@
   }
 
   // Auto-hide drag hint
-  setTimeout(() => {
-    if (dragHint && !hasDragged) dragHint.classList.add('hidden');
-  }, 6000);
+  setTimeout(() => { if (dragHint && !hasDragged) dragHint.classList.add('hidden'); }, 6000);
 </script>
