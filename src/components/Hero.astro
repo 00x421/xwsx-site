@@ -374,18 +374,30 @@
   dodec.position.set(-2, -2, 2);
   scene.add(dodec);
 
+  // Semi-transparent solid faces for volume
+  const solidMat = (o = 0.04) =>
+    new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: o, side: THREE.DoubleSide });
+  octa.add(new THREE.Mesh(new THREE.OctahedronGeometry(0.5), solidMat(0.04)));
+  ico.add(new THREE.Mesh(new THREE.IcosahedronGeometry(0.8), solidMat(0.03)));
+  dodec.add(new THREE.Mesh(new THREE.DodecahedronGeometry(0.4), solidMat(0.04)));
+
   // Decorative line segments
+  const lineMeshes: THREE.Line[] = [];
   [[[-6,1,-2],[-4,1.5,-1]],[[4,-2,0],[5.5,-1,1]],[[-1,3,-4],[1,3.2,-3]]].forEach(pts => {
     const geo = new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(...p)));
-    scene.add(new THREE.Line(geo, lineMat(0.12)));
+    const line = new THREE.Line(geo, lineMat(0.12));
+    scene.add(line);
+    lineMeshes.push(line);
   });
 
   // Small spheres (dots)
   const dotGeo = new THREE.SphereGeometry(0.04, 8, 8);
+  const dotMeshes: THREE.Mesh[] = [];
   [[-1,3,1],[5,-2,-3],[-5,-1,2],[2,2.5,-1],[-3,0,4],[4,1,2],[0,-3,-2],[3,-3,3]].forEach(pos => {
     const dot = new THREE.Mesh(dotGeo, wireMat(0.3));
     dot.position.set(...pos);
     scene.add(dot);
+    dotMeshes.push(dot);
   });
 
   // Grid floor
@@ -397,18 +409,45 @@
 
   // Particle field
   const PARTICLE_COUNT = 200;
-  const pPos = new Float32Array(PARTICLE_COUNT * 3);
+  const pFinal = new Float32Array(PARTICLE_COUNT * 3);
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    pPos[i * 3]     = (Math.random() - 0.5) * 30;
-    pPos[i * 3 + 1] = (Math.random() - 0.5) * 20;
-    pPos[i * 3 + 2] = (Math.random() - 0.5) * 30;
+    pFinal[i * 3]     = (Math.random() - 0.5) * 30;
+    pFinal[i * 3 + 1] = (Math.random() - 0.5) * 20;
+    pFinal[i * 3 + 2] = (Math.random() - 0.5) * 30;
   }
+  const pPos = new Float32Array(PARTICLE_COUNT * 3);
   const pGeo = new THREE.BufferGeometry();
   pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
   const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
     color: ACCENT, size: 0.04, transparent: true, opacity: 0.5, sizeAttenuation: true,
   }));
   scene.add(particles);
+
+  // ===== Geometry group for idle rotation =====
+  const geoGroup = new THREE.Group();
+  [torus1, torus2, cubeEdges, octa, ico, dodec, ...lineMeshes, ...dotMeshes].forEach(m => {
+    scene.remove(m);
+    geoGroup.add(m);
+  });
+  scene.add(geoGroup);
+
+  // ===== Entry Animation =====
+  const ENTRY_DURATION = 3;
+  const _startTime = performance.now();
+  const animObjs = [
+    { mesh: torus1, tx: -4, ty: 2, tz: -3 },
+    { mesh: torus2, tx: 3.5, ty: -1.5, tz: 1 },
+    { mesh: cubeEdges, tx: 5, ty: 0.5, tz: -5 },
+    { mesh: octa, tx: -3.5, ty: -0.5, tz: 3 },
+    { mesh: ico, tx: 2, ty: 3, tz: -7 },
+    { mesh: dodec, tx: -2, ty: -2, tz: 2 },
+  ];
+  animObjs.forEach(o => {
+    o.ox = (Math.random() - 0.5) * 20;
+    o.oy = (Math.random() - 0.5) * 12;
+    o.oz = (Math.random() - 0.5) * 20;
+    o.mesh.position.set(o.tx + o.ox, o.ty + o.oy, o.tz + o.oz);
+  });
 
   // ===== Camera Controls =====
   const targetPos = DEFAULT_CAM.clone();
@@ -582,34 +621,44 @@
       0
     );
 
-    // Animate geometries
-    torus1.rotation.x = t * 0.15;
-    torus1.rotation.y = t * 0.1;
-    torus1.position.y = 2 + Math.sin(t * 0.5) * 0.3;
+    // Slow idle orbit
+    geoGroup.rotation.y = t * 0.03;
 
-    torus2.rotation.x = -t * 0.2;
-    torus2.rotation.z = t * 0.15;
-    torus2.position.y = -1.5 + Math.sin(t * 0.7 + 1) * 0.2;
-
-    cubeEdges.rotation.x = t * 0.3;
-    cubeEdges.rotation.y = t * 0.2;
-    cubeEdges.position.y = 0.5 + Math.sin(t * 0.4) * 0.15;
-
+    // Entry + geometry animation
+    const entryT = Math.min((performance.now() - _startTime) / (ENTRY_DURATION * 1000), 1);
+    const entryEase = 1 - Math.pow(1 - entryT, 3);
+    const easeOff = 1 - entryEase;
+    const floatYs = [
+      Math.sin(t * 0.5) * 0.3, Math.sin(t * 0.7 + 1) * 0.2, Math.sin(t * 0.4) * 0.15,
+      Math.sin(t * 0.6 + 2) * 0.25, Math.sin(t * 0.3) * 0.2, Math.sin(t * 0.5 + 3) * 0.15,
+    ];
+    animObjs.forEach((o, i) => {
+      o.mesh.position.set(
+        o.tx + o.ox * easeOff,
+        o.ty + o.oy * easeOff + floatYs[i] * entryEase,
+        o.tz + o.oz * easeOff
+      );
+    });
+    torus1.rotation.x = t * 0.15; torus1.rotation.y = t * 0.1;
+    torus2.rotation.x = -t * 0.2; torus2.rotation.z = t * 0.15;
+    cubeEdges.rotation.x = t * 0.3; cubeEdges.rotation.y = t * 0.2;
     octa.rotation.y = t * 0.25;
-    octa.position.y = -0.5 + Math.sin(t * 0.6 + 2) * 0.25;
+    ico.rotation.x = t * 0.1; ico.rotation.z = t * 0.15;
+    dodec.rotation.x = t * 0.3; dodec.rotation.y = t * 0.2;
 
-    ico.rotation.x = t * 0.1;
-    ico.rotation.z = t * 0.15;
-    ico.position.y = 3 + Math.sin(t * 0.3) * 0.2;
-
-    dodec.rotation.x = t * 0.3;
-    dodec.rotation.y = t * 0.2;
-    dodec.position.y = -2 + Math.sin(t * 0.5 + 3) * 0.15;
-
-    // Particle drift
-    const pArr = particles.geometry.attributes.position.array as Float32Array;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      pArr[i * 3 + 1] += Math.sin(t + i * 0.1) * 0.0005;
+    // Particle entry + flow toward camera
+    if (entryT < 1) {
+      for (let i = 0; i < PARTICLE_COUNT * 3; i++) pPos[i] = pFinal[i] * entryEase;
+    } else {
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        pPos[i * 3 + 2] += 0.015;
+        pPos[i * 3 + 1] += Math.sin(t * 0.5 + i * 0.3) * 0.001;
+        if (pPos[i * 3 + 2] > camera.position.z + 2) {
+          pPos[i * 3]     = (Math.random() - 0.5) * 30;
+          pPos[i * 3 + 1] = (Math.random() - 0.5) * 20;
+          pPos[i * 3 + 2] = camera.position.z - 15 - Math.random() * 15;
+        }
+      }
     }
     particles.geometry.attributes.position.needsUpdate = true;
 
