@@ -13,6 +13,7 @@
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
+  perspective: 800px;
 }
 .h3d-el {
   position: absolute;

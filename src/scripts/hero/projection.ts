@@ -19,6 +19,8 @@ export function createProjection(
 
   function update(): void {
     const w = innerWidth, h = innerHeight;
+    const RAD2DEG = 180 / Math.PI;
+
     textNodes.forEach(({ el, worldPos }) => {
       _projVec.copy(worldPos).project(camera);
 
@@ -34,9 +36,20 @@ export function createProjection(
       const defaultDist = DEFAULT_CAM_POS.distanceTo(worldPos);
       const scale = THREE.MathUtils.clamp(defaultDist / dist, 0.4, 2.5);
 
+      // Tilt = viewing angle change from default camera position
+      const relX = camera.position.x - worldPos.x;
+      const relY = camera.position.y - worldPos.y;
+      const relZ = camera.position.z - worldPos.z;
+      const defRelX = DEFAULT_CAM_POS.x - worldPos.x;
+      const defRelY = DEFAULT_CAM_POS.y - worldPos.y;
+      const defRelZ = DEFAULT_CAM_POS.z - worldPos.z;
+
+      const tiltY = (-Math.atan2(relX, relZ) + Math.atan2(defRelX, defRelZ)) * RAD2DEG;
+      const tiltX = (Math.atan2(relY, relZ) - Math.atan2(defRelY, defRelZ)) * RAD2DEG;
+
       el.style.left = sx + 'px';
       el.style.top = sy + 'px';
-      el.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      el.style.transform = `translate(-50%, -50%) scale(${scale}) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
       el.style.opacity = el.classList.contains('revealed')
         ? String(THREE.MathUtils.clamp(scale, 0.3, 1))
         : '0';

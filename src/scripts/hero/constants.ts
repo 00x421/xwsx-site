@@ -7,7 +7,7 @@ export const BG_HEX = 0xfafbfc;
 // Camera
 export const DEFAULT_CAM_POS = new THREE.Vector3(0, 0, 8);
 export const CAM_CLAMP_X: [number, number] = [-6, 6];
-export const CAM_CLAMP_Y: [number, number] = [-4, 4];
+export const CAM_CLAMP_Y: [number, number] = [0, 0];
 export const CAM_CLAMP_Z: [number, number] = [3, 14];
 export const CAM_LERP = 0.08;
 export const CAM_RESET_RATE = 0.01;
