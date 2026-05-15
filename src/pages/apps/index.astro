@@ -18,7 +18,7 @@ const apps = (await getCollection('apps'))
       </div>
 
       {apps.length > 0 ? (
-        <section class="section" style="padding-top:20px;">
+        <section class="section section-compact">
           <div class="apps-grid">
             {apps.map(app => (
               <a href={`/apps/${app.slug}/`} class="tilt-card app-card reveal">
@@ -42,7 +42,7 @@ const apps = (await getCollection('apps'))
           </div>
         </section>
       ) : (
-        <p style="text-align:center;color:var(--text-muted);padding:80px 0;">还没有发布的应用，开发中</p>
+        <p class="empty-state">还没有发布的应用，开发中</p>
       )}
     </div>
   </main>

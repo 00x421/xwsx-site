@@ -1,10 +1,30 @@
 ---
+import '../styles/hero.css';
 ---
 
-{/* Three.js Canvas */}
-<canvas id="scene3d"></canvas>
+{/* Three.js Canvas — hidden on tier-3 (mobile) */}
+<canvas id="scene3d" role="img" aria-label="3D 空间漫游背景"></canvas>
 
-{/* HTML Text Overlay */}
+{/* CSS Fallback for mobile / low-end devices */}
+<div class="hero-fallback" id="heroFallback" style="display:none">
+  <p class="fb-greeting" id="fbGreeting"></p>
+  <p class="fb-sub">Hello, I'm</p>
+  <div class="fb-name">烦恼全<span class="char-outline">無</span>先生</div>
+  <p class="fb-desc">独立开发者 / 全栈工程师 · 专注效率工具与优雅数字产品</p>
+  <div class="fb-tags">
+    <span class="fb-tag">全栈开发</span>
+    <span class="fb-tag">独立开发</span>
+    <span class="fb-tag">效率工具</span>
+    <span class="fb-tag">开源</span>
+  </div>
+  <div class="fb-btns">
+    <a href="/articles/" class="fb-btn">文章 →</a>
+    <a href="/apps/" class="fb-btn">应用 →</a>
+    <a href="/about/" class="fb-btn">关于 →</a>
+  </div>
+</div>
+
+{/* HTML Text Overlay (3D mode only) */}
 <div class="hero-overlay" id="heroOverlay">
   <p class="h3d-el h3d-greeting" id="h3dGreeting" data-pos="0,1.8,0"></p>
   <p class="h3d-el h3d-sub" data-pos="0,1.3,0.4">Hello, I'm</p>
@@ -57,777 +77,76 @@
 <div class="vignette-overlay"></div>
 <div class="grain-overlay"></div>
 
-<style>
-  #scene3d {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 1;
-  }
-
-  /* ===== HTML Overlay ===== */
-  .hero-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  .h3d-el {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    white-space: nowrap;
-    pointer-events: auto;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .h3d-el.revealed { opacity: 1; }
-
-  .h3d-greeting {
-    font-size: 12px; color: var(--text-muted);
-    letter-spacing: 0.2em;
-  }
-  .h3d-sub {
-    font-size: 11px; color: var(--text-muted);
-    letter-spacing: 0.25em; text-transform: uppercase;
-  }
-  .h3d-chars {
-    display: flex; gap: 2px;
-  }
-  .char-wrap {
-    cursor: default;
-    transition: transform 0.5s cubic-bezier(.23,1,.32,1), filter 0.3s;
-  }
-  .char-el {
-    font-size: clamp(42px, 7vw, 80px);
-    font-weight: 900; color: var(--text-primary);
-    letter-spacing: -0.02em;
-    display: inline-block;
-    text-shadow:
-      0 1px 0 rgba(44,49,56,0.06),
-      0 2px 0 rgba(44,49,56,0.04),
-      0 4px 8px rgba(44,49,56,0.06);
-  }
-  .char-outline {
-    color: transparent;
-    -webkit-text-stroke: 2px var(--accent);
-    text-shadow: none;
-  }
-  .char-wrap.lit .char-el {
-    color: var(--accent);
-    text-shadow:
-      0 1px 0 rgba(123,142,168,0.1),
-      0 2px 0 rgba(123,142,168,0.08),
-      0 8px 20px rgba(123,142,168,0.15);
-    transform: scale(1.15);
-  }
-  .char-wrap.lit .char-outline {
-    color: transparent;
-    -webkit-text-stroke: 2px var(--text-primary);
-    text-shadow: none;
-  }
-
-  .h3d-desc {
-    font-size: 13px; color: var(--text-muted);
-    letter-spacing: 0.06em;
-    min-height: 1.6em;
-  }
-  .h3d-cursor {
-    display: inline-block;
-    width: 1.5px; height: 1em;
-    background: var(--accent);
-    margin-left: 1px;
-    vertical-align: text-bottom;
-    animation: cursorBlink .8s step-end infinite;
-  }
-  .h3d-cursor.done { animation: none; opacity: 0; }
-  @keyframes cursorBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .h3d-tags {
-    display: flex; gap: 8px; justify-content: center;
-  }
-  .h3d-tag {
-    padding: 4px 14px; border: 1px solid var(--border);
-    border-radius: 20px; font-size: 11px;
-    color: var(--text-muted); background: transparent;
-    letter-spacing: 0.04em; transition: all .3s;
-  }
-  .h3d-tag:hover {
-    border-color: var(--accent); color: var(--accent);
-    background: var(--accent-light);
-  }
-
-  .h3d-btns { display: flex; gap: 12px; }
-  .h3d-btn {
-    padding: 7px 22px; border: 1px solid var(--border);
-    border-radius: 24px; font-size: 12px;
-    color: var(--text-muted); text-decoration: none;
-    letter-spacing: 0.06em; background: transparent;
-    transition: all .35s cubic-bezier(.23,1,.32,1);
-  }
-  .h3d-btn:hover {
-    border-color: var(--accent); color: var(--accent);
-    background: var(--accent-light);
-    box-shadow: 0 6px 20px rgba(123,142,168,0.1);
-  }
-
-  .h3d-clock {
-    font-size: 11px; color: var(--border-hover);
-    letter-spacing: 0.25em;
-  }
-
-  /* ===== Lens ===== */
-  .lens {
-    position: fixed;
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 50;
-    transform: translate(-50%, -50%);
-    border: 1.5px solid rgba(123,142,168,0.25);
-    background: radial-gradient(circle, rgba(250,251,252,0.2), rgba(250,251,252,0.08));
-    backdrop-filter: blur(2px);
-    box-shadow:
-      0 0 0 1px rgba(123,142,168,0.05),
-      0 20px 60px rgba(123,142,168,0.1),
-      inset 0 0 40px rgba(250,251,252,0.15);
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity .4s cubic-bezier(.23,1,.32,1);
-  }
-  .lens.visible { opacity: 1; }
-  .lens::before {
-    content: ''; position: absolute; inset: 0; border-radius: 50%;
-    background: radial-gradient(ellipse at 35% 30%, rgba(255,255,255,0.2), transparent 60%);
-    z-index: 5;
-  }
-  .lens-content {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    z-index: 10;
-  }
-  .lens-t1, .lens-t2 {
-    color: var(--text-primary);
-    font-size: 22px; font-weight: 700;
-    letter-spacing: 0.04em; line-height: 1.3;
-    opacity: 0; transform: translateY(8px);
-    transition: all .4s cubic-bezier(.23,1,.32,1);
-    white-space: nowrap;
-  }
-  .lens-t2 { transition-delay: .06s; }
-  .lens-sub {
-    color: var(--text-muted);
-    font-size: 10px; letter-spacing: 0.18em;
-    opacity: 0; transform: translateY(6px);
-    transition: all .5s cubic-bezier(.23,1,.32,1) .12s;
-  }
-  .lens.active .lens-t1, .lens.active .lens-t2 {
-    opacity: 1; transform: translateY(0);
-  }
-  .lens.active .lens-sub {
-    opacity: .6; transform: translateY(0);
-  }
-
-  /* ===== Drag hint ===== */
-  .drag-hint {
-    position: fixed; bottom: 60px; left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    display: flex; align-items: center; gap: 8px;
-    color: var(--text-muted);
-    font-size: 11px; letter-spacing: 0.1em;
-    opacity: 0;
-    animation: fadeIn .7s ease forwards 1.5s;
-    transition: opacity .5s;
-  }
-  .drag-hint.hidden { opacity: 0 !important; pointer-events: none; }
-  .drag-hint svg { opacity: 0.5; }
-  .drag-hint span { opacity: 0.6; }
-
-  /* ===== Reset view ===== */
-  .reset-view {
-    position: fixed; bottom: 32px; right: 32px;
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--bg-card); border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-muted); cursor: pointer;
-    z-index: 100;
-    opacity: 0; transform: translateY(8px);
-    transition: all .4s var(--ease);
-  }
-  .reset-view.visible { opacity: 1; transform: translateY(0); }
-  .reset-view:hover { color: var(--accent); border-color: var(--accent); }
-
-  /* ===== Overlays ===== */
-  .vignette-overlay {
-    position: fixed; inset: 0; z-index: 8999;
-    pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(123,142,168,0.04) 100%);
-  }
-  .grain-overlay {
-    position: fixed; inset: 0; z-index: 9000;
-    pointer-events: none; opacity: 0.02;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 128px 128px;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(24px); }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-  }
-</style>
-
 <script>
-  import * as THREE from 'three';
+  import { detectTier } from '../scripts/hero/detect';
+  import { createScene } from '../scripts/hero/scene';
+  import { createControls } from '../scripts/hero/controls';
+  import { createAnimator } from '../scripts/hero/animate';
+  import { initUI } from '../scripts/hero/ui';
+  import { createProjection, collectTextNodes } from '../scripts/hero/projection';
 
-  // ===== Constants =====
-  const ACCENT = 0x7b8ea8;
-  const BG = 0xfafbfc;
-  const DEFAULT_CAM = new THREE.Vector3(0, 0, 8);
-
-  // ===== DOM Refs =====
-  const canvas = document.getElementById('scene3d') as HTMLCanvasElement;
-  const lens = document.getElementById('lens');
-  const lt1 = document.getElementById('lt1');
-  const lt2 = document.getElementById('lt2');
-  const ls = document.getElementById('ls');
-  const dragHint = document.getElementById('dragHint');
-  const resetBtn = document.getElementById('resetView');
-  const h3dGreeting = document.getElementById('h3dGreeting');
-  const h3dClock = document.getElementById('h3dClock');
-  const h3dType = document.getElementById('h3dType');
-  const h3dDescEl = document.getElementById('h3dDesc');
-  const charWraps = document.querySelectorAll('.char-wrap');
-
-  // Text nodes for 3D projection
-  const textNodes: { el: HTMLElement; worldPos: THREE.Vector3 }[] = [];
-  document.querySelectorAll<HTMLElement>('.h3d-el').forEach(el => {
-    const p = el.dataset.pos;
-    if (!p) return;
-    const [x, y, z] = p.split(',').map(Number);
-    textNodes.push({ el, worldPos: new THREE.Vector3(x, y, z) });
-  });
-
-  // ===== Three.js Setup =====
   document.body.style.overflow = 'hidden';
 
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(BG, 0.032);
+  const tier = detectTier();
 
-  const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100);
-  camera.position.copy(DEFAULT_CAM);
+  // Tier-3: show CSS fallback, skip Three.js
+  if (tier === 3) {
+    const fallback = document.getElementById('heroFallback')!;
+    fallback.style.display = 'flex';
+    document.getElementById('scene3d')!.style.display = 'none';
+    document.getElementById('heroOverlay')!.style.display = 'none';
+    document.getElementById('lens')!.style.display = 'none';
+    document.getElementById('dragHint')!.style.display = 'none';
+    document.getElementById('resetView')!.style.display = 'none';
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setClearColor(BG, 1);
-
-  // ===== Materials =====
-  const wireMat = (opacity = 0.15) =>
-    new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity, wireframe: true });
-  const lineMat = (opacity = 0.2) =>
-    new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity });
-
-  // Proximity-glow materials for polyhedra (will be dynamically updated)
-  const glowMeshes: { mesh: THREE.Mesh; baseOpacity: number }[] = [];
-
-  // ===== Scene Objects =====
-  // Torus 1 — large ring, left-upper-far
-  const torus1 = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.025, 16, 100), wireMat(0.12));
-  torus1.position.set(-4, 2, -3);
-  scene.add(torus1);
-
-  // Torus 2 — small ring, right-lower-near
-  const torus2 = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.02, 16, 64), wireMat(0.1));
-  torus2.position.set(3.5, -1.5, 1);
-  scene.add(torus2);
-
-  // Wireframe cube — far right
-  const cubeEdges = new THREE.LineSegments(
-    new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)),
-    lineMat(0.12)
-  );
-  cubeEdges.position.set(5, 0.5, -5);
-  scene.add(cubeEdges);
-
-  // Octahedron — left-near
-  const octa = new THREE.Mesh(new THREE.OctahedronGeometry(0.8), wireMat(0.12));
-  octa.position.set(-3.5, -0.5, 3);
-  scene.add(octa);
-  glowMeshes.push({ mesh: octa, baseOpacity: 0.12 });
-
-  // Icosahedron — far upper
-  const ico = new THREE.Mesh(new THREE.IcosahedronGeometry(0.8), wireMat(0.1));
-  ico.position.set(2, 3, -7);
-  scene.add(ico);
-  glowMeshes.push({ mesh: ico, baseOpacity: 0.1 });
-
-  // Dodecahedron — left-lower-near
-  const dodec = new THREE.Mesh(new THREE.DodecahedronGeometry(0.7), wireMat(0.12));
-  dodec.position.set(-2, -2, 2);
-  scene.add(dodec);
-  glowMeshes.push({ mesh: dodec, baseOpacity: 0.12 });
-
-  // Semi-transparent solid faces for volume
-  const solidMats: THREE.MeshBasicMaterial[] = [];
-  const makeSolid = (o: number, geo: THREE.BufferGeometry) => {
-    const m = new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: o, side: THREE.DoubleSide });
-    solidMats.push(m);
-    return new THREE.Mesh(geo, m);
-  };
-  octa.add(makeSolid(0.08, new THREE.OctahedronGeometry(0.8)));
-  ico.add(makeSolid(0.06, new THREE.IcosahedronGeometry(0.8)));
-  dodec.add(makeSolid(0.08, new THREE.DodecahedronGeometry(0.7)));
-
-  // Decorative line segments
-  const lineMeshes: THREE.Line[] = [];
-  [[[-6,1,-2],[-4,1.5,-1]],[[4,-2,0],[5.5,-1,1]],[[-1,3,-4],[1,3.2,-3]]].forEach(pts => {
-    const geo = new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(...p)));
-    const line = new THREE.Line(geo, lineMat(0.12));
-    scene.add(line);
-    lineMeshes.push(line);
-  });
-
-  // Celestial shapes — moon, stars
-  const dotMeshes: THREE.Mesh[] = [];
-  const celestialMat = new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.18, side: THREE.DoubleSide });
-
-  // Crescent moon (flat) — two arcs meeting at intersection points
-  function moonGeo(R: number) {
-    const d = R * 0.6;
-    const r = R * 0.7;
-    const ix = (R * R - r * r + d * d) / (2 * d);
-    const iy = Math.sqrt(Math.max(0.001, R * R - ix * ix));
-    const outerA = Math.atan2(iy, ix);
-    const innerA = Math.atan2(iy, ix - d);
-    const s = new THREE.Shape();
-    s.absarc(0, 0, R, -outerA, outerA, false);
-    s.absarc(d, 0, r, innerA, -innerA, true);
-    s.closePath();
-    return new THREE.ShapeGeometry(s);
-  }
-
-  // 4-pointed star (flat, elegant)
-  function starGeo(outer: number) {
-    const s = new THREE.Shape();
-    const inner = outer * 0.35;
-    for (let i = 0; i < 8; i++) {
-      const r = i % 2 === 0 ? outer : inner;
-      const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
-      i === 0 ? s.moveTo(Math.cos(a) * r, Math.sin(a) * r) : s.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    // Greeting for fallback
+    const h = new Date().getHours();
+    const fbGreeting = document.getElementById('fbGreeting');
+    if (fbGreeting) {
+      fbGreeting.textContent =
+        h >= 5 && h < 12 ? '早上好' :
+        h >= 12 && h < 18 ? '下午好' :
+        h >= 18 && h < 22 ? '晚上好' :
+        '夜深了，注意休息';
     }
-    s.closePath();
-    return new THREE.ShapeGeometry(s);
-  }
+  } else {
+    // Tier-1 or Tier-2: full 3D scene
+    const canvas = document.getElementById('scene3d') as HTMLCanvasElement;
+    const resetBtn = document.getElementById('resetView');
+    const dragHint = document.getElementById('dragHint');
 
-  [
-    { geo: moonGeo(0.45), pos: [-1.2, 3, 0.5] },
-    { geo: moonGeo(0.3), pos: [-3, 0, 3] },
-    { geo: starGeo(0.18), pos: [2.5, 2.8, -1] },
-    { geo: starGeo(0.14), pos: [5, -1.5, -2] },
-    { geo: starGeo(0.1), pos: [-5, -0.5, 2] },
-  ].forEach(c => {
-    const mesh = new THREE.Mesh(c.geo, celestialMat);
-    mesh.position.set(...c.pos);
-    mesh.rotation.set(0, Math.random() * Math.PI, 0);
-    scene.add(mesh);
-    dotMeshes.push(mesh);
-  });
+    const sd = createScene(canvas, tier);
+    const controls = createControls(sd.camera, resetBtn, dragHint);
 
-  // Grid floor
-  const grid = new THREE.GridHelper(40, 40, ACCENT, ACCENT);
-  grid.position.y = -3.5;
-  (grid.material as THREE.Material).transparent = true;
-  (grid.material as THREE.Material).opacity = 0.06;
-  scene.add(grid);
+    const textNodes = collectTextNodes();
+    const projection = createProjection(sd.camera, textNodes);
 
-  // Particle field
-  const PARTICLE_COUNT = 500;
-  const pFinal = new Float32Array(PARTICLE_COUNT * 3);
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    pFinal[i * 3]     = (Math.random() - 0.5) * 30;
-    pFinal[i * 3 + 1] = (Math.random() - 0.5) * 20;
-    pFinal[i * 3 + 2] = (Math.random() - 0.5) * 30;
-  }
-  const pPos = new Float32Array(PARTICLE_COUNT * 3);
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-  const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
-    color: ACCENT, size: 0.04, transparent: true, opacity: 0.5, sizeAttenuation: true,
-  }));
-  scene.add(particles);
+    const charWraps = document.querySelectorAll<HTMLElement>('.char-wrap');
 
-  // ===== Geometry group for idle rotation =====
-  const geoGroup = new THREE.Group();
-  [torus1, torus2, cubeEdges, octa, ico, dodec, ...lineMeshes, ...dotMeshes].forEach(m => {
-    scene.remove(m);
-    geoGroup.add(m);
-  });
-  scene.add(geoGroup);
-
-  // ===== Entry Animation =====
-  const ENTRY_DURATION = 3;
-  const _startTime = performance.now();
-  const animObjs = [
-    { mesh: torus1, tx: -4, ty: 2, tz: -3 },
-    { mesh: torus2, tx: 3.5, ty: -1.5, tz: 1 },
-    { mesh: cubeEdges, tx: 5, ty: 0.5, tz: -5 },
-    { mesh: octa, tx: -3.5, ty: -0.5, tz: 3 },
-    { mesh: ico, tx: 2, ty: 3, tz: -7 },
-    { mesh: dodec, tx: -2, ty: -2, tz: 2 },
-  ];
-  animObjs.forEach(o => {
-    o.ox = (Math.random() - 0.5) * 20;
-    o.oy = (Math.random() - 0.5) * 12;
-    o.oz = (Math.random() - 0.5) * 20;
-    o.mesh.position.set(o.tx + o.ox, o.ty + o.oy, o.tz + o.oz);
-  });
-
-  // ===== Camera Controls =====
-  const targetPos = DEFAULT_CAM.clone();
-  let isDragging = false;
-  let hasDragged = false;
-  let dragStartX = 0, dragStartY = 0;
-  let dragStartPX = 0, dragStartPY = 0;
-  let mx = innerWidth / 2, my = innerHeight / 2;
-  let lensX = mx, lensY = my;
-  let activeIdx = -1;
-
-  function isInteractive(el: HTMLElement) {
-    return !!el.closest('a, button, input, .music-player');
-  }
-  function clampCam(pos: THREE.Vector3) {
-    pos.x = THREE.MathUtils.clamp(pos.x, -6, 6);
-    pos.y = THREE.MathUtils.clamp(pos.y, -4, 4);
-    pos.z = THREE.MathUtils.clamp(pos.z, 3, 14);
-  }
-
-  // Mouse drag — translate camera in X/Y
-  document.addEventListener('mousedown', e => {
-    if (isInteractive(e.target as HTMLElement)) return;
-    isDragging = true; hasDragged = false;
-    dragStartX = e.clientX; dragStartY = e.clientY;
-    dragStartPX = targetPos.x; dragStartPY = targetPos.y;
-  });
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    if (!isDragging) return;
-    const dx = e.clientX - dragStartX, dy = e.clientY - dragStartY;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
-    targetPos.x = dragStartPX - dx * 0.015;
-    targetPos.y = dragStartPY + dy * 0.015;
-    clampCam(targetPos);
-  });
-  document.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
-    if (hasDragged && dragHint) dragHint.classList.add('hidden');
-  });
-  document.addEventListener('contextmenu', e => {
-    if (!isInteractive(e.target as HTMLElement)) e.preventDefault();
-  });
-
-  // Scroll — move camera forward/backward
-  document.addEventListener('wheel', e => {
-    if (isInteractive(e.target as HTMLElement)) return;
-    e.preventDefault();
-    targetPos.z += e.deltaY * 0.008;
-    clampCam(targetPos);
-    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
-  }, { passive: false });
-
-  // Touch
-  let touchStartDist = 0, touchStartZ = 0;
-  document.addEventListener('touchstart', e => {
-    if (isInteractive(e.target as HTMLElement)) return;
-    if (e.touches.length === 1) {
-      const t = e.touches[0];
-      isDragging = true; hasDragged = false;
-      dragStartX = t.clientX; dragStartY = t.clientY;
-      dragStartPX = targetPos.x; dragStartPY = targetPos.y;
-    } else if (e.touches.length === 2) {
-      touchStartDist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      touchStartZ = targetPos.z;
-    }
-  }, { passive: true });
-  document.addEventListener('touchmove', e => {
-    if (e.touches.length === 1 && isDragging) {
-      const t = e.touches[0];
-      mx = t.clientX; my = t.clientY;
-      const dx = t.clientX - dragStartX, dy = t.clientY - dragStartY;
-      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
-      targetPos.x = dragStartPX - dx * 0.015;
-      targetPos.y = dragStartPY + dy * 0.015;
-      clampCam(targetPos);
-    } else if (e.touches.length === 2) {
-      const dist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      targetPos.z = touchStartZ + (touchStartDist - dist) * 0.02;
-      clampCam(targetPos);
-    }
-  }, { passive: true });
-  document.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
-    if (hasDragged && dragHint) dragHint.classList.add('hidden');
-  });
-
-  // Reset
-  resetBtn?.addEventListener('click', () => {
-    targetPos.copy(DEFAULT_CAM);
-    resetBtn.classList.remove('visible');
-  });
-
-  // Resize
-  window.addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-  });
-
-  // ===== Text Projection =====
-  const _projVec = new THREE.Vector3();
-  function updateProjection() {
-    const w = innerWidth, h = innerHeight;
-    textNodes.forEach(({ el, worldPos }) => {
-      _projVec.copy(worldPos).project(camera);
-      if (_projVec.z > 1) { el.style.opacity = '0'; el.style.pointerEvents = 'none'; return; }
-
-      const sx = (_projVec.x * 0.5 + 0.5) * w;
-      const sy = (-_projVec.y * 0.5 + 0.5) * h;
-      const dist = camera.position.distanceTo(worldPos);
-      const defaultDist = DEFAULT_CAM.distanceTo(worldPos);
-      const scale = THREE.MathUtils.clamp(defaultDist / dist, 0.4, 2.5);
-
-      el.style.left = sx + 'px';
-      el.style.top = sy + 'px';
-      el.style.transform = `translate(-50%, -50%) scale(${scale})`;
-      el.style.opacity = el.classList.contains('revealed')
-        ? String(THREE.MathUtils.clamp(scale, 0.3, 1))
-        : '0';
-      el.style.pointerEvents = 'auto';
-    });
-  }
-
-  // ===== Staggered Reveal =====
-  const revealMap: Record<string, number> = {
-    'h3dGreeting': 150, 'h3d-sub': 250, 'h3dChars': 350,
-    'h3dDesc': 500, 'h3d-tags': 600, 'h3d-btns': 700, 'h3dClock': 800,
-  };
-  textNodes.forEach(({ el }) => {
-    const id = el.id || [...el.classList].find(c => revealMap[c]) || '';
-    const delay = revealMap[id] || 400;
-    setTimeout(() => el.classList.add('revealed'), delay);
-  });
-
-  // ===== Character Lens Content =====
-  const charContent = [
-    { t1: '喜欢', t2: '折腾的技术人', s: '烦' },
-    { t1: '用代码', t2: '解决每一个难题', s: '恼' },
-    { t1: '全栈开发', t2: '前后端通吃', s: '全' },
-    { t1: '追求极简', t2: '与优雅的设计', s: '無' },
-    { t1: '独立开发', t2: '者的先行者', s: '先' },
-    { t1: '用产品', t2: '说话的生活家', s: '生' },
-  ];
-
-  // ===== Helpers =====
-  const _ray = new THREE.Vector3();
-  const _glowOrigin = new THREE.Vector3();
-  const _worldPos = new THREE.Vector3();
-
-  // ===== Animation Loop =====
-  function animate() {
-    requestAnimationFrame(animate);
-    const t = performance.now() * 0.001;
-
-    // Auto-reset when idle
-    if (!isDragging) targetPos.lerp(DEFAULT_CAM, 0.01);
-
-    // Camera lerp
-    camera.position.lerp(targetPos, 0.08);
-
-    // Subtle look-at following mouse
-    camera.lookAt(
-      (mx / innerWidth - 0.5) * 0.3,
-      -(my / innerHeight - 0.5) * 0.2,
-      0
-    );
-
-    // Mouse 3D projection on z=0 plane
-    _ray.set(
-      (mx / innerWidth) * 2 - 1,
-      -(my / innerHeight) * 2 + 1,
-      0.5
-    ).unproject(camera).sub(camera.position).normalize();
-    const _mT = -camera.position.z / _ray.z;
-    const mlX = camera.position.x + _ray.x * _mT;
-    const mlY = camera.position.y + _ray.y * _mT;
-
-    // Proximity glow: brighten geometry near cursor
-    _glowOrigin.set(mlX, mlY, 0);
-    glowMeshes.forEach(({ mesh, baseOpacity }) => {
-      const dist = _glowOrigin.distanceTo(mesh.getWorldPosition(_worldPos));
-      const glow = Math.max(0, 1 - dist / 8);
-      const mat = mesh.material as THREE.MeshBasicMaterial;
-      mat.opacity = baseOpacity + glow * 0.25;
-      mat.color.setHex(glow > 0.3 ? 0x9bb5cc : ACCENT);
-    });
-    solidMats.forEach((m, idx) => {
-      const parent = [octa, ico, dodec][idx];
-      const dist = _glowOrigin.distanceTo(parent.getWorldPosition(_worldPos));
-      const glow = Math.max(0, 1 - dist / 8);
-      m.opacity = [0.08, 0.06, 0.08][idx] + glow * 0.12;
+    const ui = initUI({
+      controls,
+      h3dGreeting: document.getElementById('h3dGreeting'),
+      h3dClock: document.getElementById('h3dClock'),
+      h3dType: document.getElementById('h3dType'),
+      h3dDescEl: document.getElementById('h3dDesc'),
+      charWraps,
+      lens: document.getElementById('lens'),
+      lt1: document.getElementById('lt1'),
+      lt2: document.getElementById('lt2'),
+      ls: document.getElementById('ls'),
+      dragHint,
+      textNodes,
     });
 
-    // Slow idle orbit
-    geoGroup.rotation.y = t * 0.03;
-
-    // Entry + geometry animation
-    const entryT = Math.min((performance.now() - _startTime) / (ENTRY_DURATION * 1000), 1);
-    const entryEase = 1 - Math.pow(1 - entryT, 3);
-    const easeOff = 1 - entryEase;
-    const floatYs = [
-      Math.sin(t * 0.5) * 0.3, Math.sin(t * 0.7 + 1) * 0.2, Math.sin(t * 0.4) * 0.15,
-      Math.sin(t * 0.6 + 2) * 0.25, Math.sin(t * 0.3) * 0.2, Math.sin(t * 0.5 + 3) * 0.15,
-    ];
-    animObjs.forEach((o, i) => {
-      o.mesh.position.set(
-        o.tx + o.ox * easeOff,
-        o.ty + o.oy * easeOff + floatYs[i] * entryEase,
-        o.tz + o.oz * easeOff
-      );
-    });
-    torus1.rotation.x = t * 0.15; torus1.rotation.y = t * 0.1;
-    torus2.rotation.x = -t * 0.2; torus2.rotation.z = t * 0.15;
-    cubeEdges.rotation.x = t * 0.3; cubeEdges.rotation.y = t * 0.2;
-    octa.rotation.y = t * 0.25;
-    ico.rotation.x = t * 0.1; ico.rotation.z = t * 0.15;
-    dodec.rotation.x = t * 0.3; dodec.rotation.y = t * 0.2;
-
-    // Particle entry + flow toward camera
-    if (entryT < 1) {
-      for (let i = 0; i < PARTICLE_COUNT * 3; i++) pPos[i] = pFinal[i] * entryEase;
-    } else {
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        pPos[i * 3 + 2] += 0.015;
-        pPos[i * 3 + 1] += Math.sin(t * 0.5 + i * 0.3) * 0.001;
-        // Repel from cursor (reuse mlX/mlY from glow calc)
-        const dx = pPos[i * 3] - mlX;
-        const dy = pPos[i * 3 + 1] - mlY;
-        const dz = pPos[i * 3 + 2];
-        const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        if (d < 6 && d > 0.01) {
-          const force = (1 - d / 6) * 0.12;
-          pPos[i * 3]     += (dx / d) * force;
-          pPos[i * 3 + 1] += (dy / d) * force;
-          pPos[i * 3 + 2] += (dz / d) * force * 0.3;
-        }
-        if (pPos[i * 3 + 2] > camera.position.z + 2) {
-          pPos[i * 3]     = (Math.random() - 0.5) * 30;
-          pPos[i * 3 + 1] = (Math.random() - 0.5) * 20;
-          pPos[i * 3 + 2] = camera.position.z - 15 - Math.random() * 15;
-        }
-      }
-    }
-    particles.geometry.attributes.position.needsUpdate = true;
-
-    // Character staggered float
-    charWraps.forEach((w, i) => {
-      const cy = Math.sin(t * 1.0 + i * 0.9) * 5;
-      const s = w.classList.contains('lit') ? 'scale(1.15)' : '';
-      w.style.transform = `translateY(${cy}px) ${s}`;
+    const animator = createAnimator({
+      scene: sd,
+      controls,
+      charWraps,
+      updateProjection: projection.update,
+      resetBtn,
+      onFrame: () => (ui as any).updateLens?.(),
     });
 
-    // Update text projection
-    updateProjection();
-
-    // Update reset button
-    resetBtn?.classList.toggle('visible', targetPos.distanceTo(DEFAULT_CAM) > 0.5);
-
-    // ===== Lens on character hover =====
-    let anyLit = false;
-    if (!isDragging) {
-      const hovered = document.elementFromPoint(mx, my);
-      const charWrap = hovered ? (hovered as HTMLElement).closest('.char-wrap') : null;
-      if (charWrap) {
-        const idx = parseInt((charWrap as HTMLElement).dataset.idx || '0');
-        charWraps.forEach(w => w.classList.remove('lit'));
-        charWrap.classList.add('lit');
-        if (activeIdx !== idx) {
-          activeIdx = idx;
-          const c = charContent[idx];
-          lt1.textContent = c.t1;
-          lt2.textContent = c.t2;
-          ls.textContent = c.s;
-        }
-        lens.classList.add('visible');
-        lens.classList.add('active');
-        lensX += (mx - lensX) * 0.12;
-        lensY += (my - lensY) * 0.12;
-        lens.style.left = lensX + 'px';
-        lens.style.top = lensY + 'px';
-        document.body.style.cursor = 'none';
-        anyLit = true;
-      }
-    }
-    if (!anyLit) {
-      lens.classList.remove('visible');
-      lens.classList.remove('active');
-      charWraps.forEach(w => w.classList.remove('lit'));
-      document.body.style.cursor = isDragging ? 'grabbing' : '';
-      activeIdx = -1;
-    }
-
-    renderer.render(scene, camera);
+    animator.start();
   }
-  animate();
-
-  // ===== Greeting =====
-  const h = new Date().getHours();
-  h3dGreeting.textContent =
-    h >= 5 && h < 12 ? '早上好' : h >= 12 && h < 18 ? '下午好' : h >= 18 && h < 22 ? '晚上好' : '夜深了，注意休息';
-
-  // ===== Clock =====
-  function tick() {
-    const d = new Date();
-    h3dClock.textContent =
-      [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2, '0')).join(':');
-  }
-  setInterval(tick, 1000);
-  tick();
-
-  // ===== Typewriter =====
-  const typeText = h3dDescEl?.dataset.typewriter;
-  if (h3dType && typeText) {
-    setTimeout(() => {
-      let i = 0;
-      function type() {
-        if (i < typeText.length) {
-          h3dType.textContent += typeText[i];
-          i++;
-          setTimeout(type, 60 + Math.random() * 40);
-        } else {
-          setTimeout(() => h3dType.nextElementSibling?.classList.add('done'), 2000);
-        }
-      }
-      type();
-    }, 1200);
-  }
-
-  // Auto-hide drag hint
-  setTimeout(() => { if (dragHint && !hasDragged) dragHint.classList.add('hidden'); }, 6000);
 </script>

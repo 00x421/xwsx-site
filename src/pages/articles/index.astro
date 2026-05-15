@@ -20,11 +20,11 @@ const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
       </div>
 
       {articles.length > 0 ? (
-        <section class="section" style="padding-top:20px;">
+        <section class="section section-compact">
           <div class="tag-filter reveal">
-            <button class="tag-pill active" data-tag="all">全部</button>
+            <button class="tag-pill active" data-tag="all" aria-pressed="true">全部</button>
             {allTags.map(tag => (
-              <button class="tag-pill" data-tag={tag}>{tag}</button>
+              <button class="tag-pill" data-tag={tag} aria-pressed="false">{tag}</button>
             ))}
           </div>
           <div class="articles-grid" id="articles-grid">
@@ -54,7 +54,7 @@ const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
           </div>
         </section>
       ) : (
-        <p style="text-align:center;color:var(--text-muted);padding:80px 0;">还没有文章，敬请期待</p>
+        <p class="empty-state">还没有文章，敬请期待</p>
       )}
     </div>
   </main>
@@ -66,8 +66,12 @@ const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
   const cards = document.querySelectorAll<HTMLElement>('#articles-grid .article-card');
   pills.forEach(pill => {
     pill.addEventListener('click', () => {
-      pills.forEach(p => p.classList.remove('active'));
+      pills.forEach(p => {
+        p.classList.remove('active');
+        p.setAttribute('aria-pressed', 'false');
+      });
       pill.classList.add('active');
+      pill.setAttribute('aria-pressed', 'true');
       const tag = (pill as HTMLElement).dataset.tag;
       cards.forEach(card => {
         const tags = JSON.parse(card.dataset.tags || '[]');
