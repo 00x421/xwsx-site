@@ -86,6 +86,16 @@ const related = allArticles
 
       <div class="article-end">
         <span class="article-end-mark">✦</span>
+        <div class="article-share" id="articleShare">
+          <button class="share-btn" id="shareCopy" title="复制链接">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制链接
+          </button>
+          <button class="share-btn" id="shareX" title="分享到 X">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            分享
+          </button>
+        </div>
         <a href="/articles/" class="article-end-back">返回文章列表 →</a>
       </div>
     </div>
@@ -130,4 +140,26 @@ const related = allArticles
   }
 
   document.addEventListener('astro:page-load', initArticlePage);
+
+  function initShareButtons(): void {
+    const copyBtn = document.getElementById('shareCopy');
+    const xBtn = document.getElementById('shareX');
+    const url = window.location.href;
+    const title = document.querySelector('.detail-header h1')?.textContent || '';
+
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(url).then(() => {
+        copyBtn.textContent = '已复制';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 复制链接';
+        }, 1500);
+      });
+    });
+
+    xBtn?.addEventListener('click', () => {
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank');
+    });
+  }
+
+  document.addEventListener('astro:page-load', initShareButtons);
 </script>

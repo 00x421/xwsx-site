@@ -23,9 +23,10 @@ export interface AnimateDeps {
 
 const BRIGHT_HEX = 0x9bb5cc;
 
-export function createAnimator(deps: AnimateDeps): { start: () => void; dispose: () => void } {
+export function createAnimator(deps: AnimateDeps): { start: () => void; pause: () => void; resume: () => void; dispose: () => void } {
   const { scene, controls, charWraps, updateProjection, resetBtn, onFrame } = deps;
   let rafId = 0;
+  let isPaused = false;
 
   const _ray = new THREE.Vector3();
   const _glowOrigin = new THREE.Vector3();
@@ -151,6 +152,7 @@ export function createAnimator(deps: AnimateDeps): { start: () => void; dispose:
 
   function loop(): void {
     rafId = requestAnimationFrame(loop);
+    if (isPaused) return;
     const t = performance.now() * 0.001;
 
     // Auto-reset when idle
@@ -204,6 +206,8 @@ export function createAnimator(deps: AnimateDeps): { start: () => void; dispose:
 
   return {
     start: () => { rafId = requestAnimationFrame(loop); },
+    pause: () => { isPaused = true; },
+    resume: () => { isPaused = false; },
     dispose: () => cancelAnimationFrame(rafId),
   };
 }

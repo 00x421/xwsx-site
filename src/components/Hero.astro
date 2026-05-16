@@ -175,6 +175,13 @@ import '../styles/hero.css';
       animatorHandle = animator;
 
       animator.start();
+
+      // Pause rendering when canvas leaves viewport
+      const viewportObserver = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) animator.resume();
+        else animator.pause();
+      }, { threshold: 0 });
+      viewportObserver.observe(canvas);
     }
   }
 
