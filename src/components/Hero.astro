@@ -79,74 +79,115 @@ import '../styles/hero.css';
 
 <script>
   import { detectTier } from '../scripts/hero/detect';
-  import { createScene } from '../scripts/hero/scene';
+  import { createScene, updateTheme, getTimeMood } from '../scripts/hero/scene';
   import { createControls } from '../scripts/hero/controls';
   import { createAnimator } from '../scripts/hero/animate';
   import { initUI } from '../scripts/hero/ui';
   import { createProjection, collectTextNodes } from '../scripts/hero/projection';
 
-  document.body.style.overflow = 'hidden';
+  let animatorHandle: { dispose: () => void } | null = null;
+  let controlsHandle: { dispose: () => void } | null = null;
+  let uiHandle: { dispose: () => void } | null = null;
 
-  const tier = detectTier();
+  function initHero(): void {
+    const canvas = document.getElementById('scene3d') as HTMLCanvasElement | null;
+    if (!canvas) return;
 
-  // Tier-3: show CSS fallback, skip Three.js
-  if (tier === 3) {
-    const fallback = document.getElementById('heroFallback')!;
-    fallback.style.display = 'flex';
-    document.getElementById('scene3d')!.style.display = 'none';
-    document.getElementById('heroOverlay')!.style.display = 'none';
-    document.getElementById('lens')!.style.display = 'none';
-    document.getElementById('dragHint')!.style.display = 'none';
-    document.getElementById('resetView')!.style.display = 'none';
+    // Dispose previous scene if re-navigating to homepage
+    animatorHandle?.dispose();
+    controlsHandle?.dispose();
+    uiHandle?.dispose();
+    animatorHandle = null;
+    controlsHandle = null;
+    uiHandle = null;
 
-    // Greeting for fallback
-    const h = new Date().getHours();
-    const fbGreeting = document.getElementById('fbGreeting');
-    if (fbGreeting) {
-      fbGreeting.textContent =
-        h >= 5 && h < 12 ? '早上好' :
-        h >= 12 && h < 18 ? '下午好' :
-        h >= 18 && h < 22 ? '晚上好' :
-        '夜深了，注意休息';
+    document.body.style.overflow = 'hidden';
+
+    const tier = detectTier();
+
+    // Tier-3: show CSS fallback, skip Three.js
+    if (tier === 3) {
+      const fallback = document.getElementById('heroFallback')!;
+      fallback.style.display = 'flex';
+      document.getElementById('scene3d')!.style.display = 'none';
+      document.getElementById('heroOverlay')!.style.display = 'none';
+      document.getElementById('lens')!.style.display = 'none';
+      document.getElementById('dragHint')!.style.display = 'none';
+      document.getElementById('resetView')!.style.display = 'none';
+
+      const h = new Date().getHours();
+      const fbGreeting = document.getElementById('fbGreeting');
+      if (fbGreeting) {
+        fbGreeting.textContent =
+          h >= 5 && h < 12 ? '早上好' :
+          h >= 12 && h < 18 ? '下午好' :
+          h >= 18 && h < 22 ? '晚上好' :
+          '夜深了，注意休息';
+      }
+    } else {
+      // Tier-1 or Tier-2: full 3D scene
+      const resetBtn = document.getElementById('resetView');
+      const dragHint = document.getElementById('dragHint');
+
+      const sd = createScene(canvas, tier, getTimeMood());
+
+      // Apply initial theme
+      const initialTheme = document.documentElement.getAttribute('data-theme');
+      if (initialTheme === 'dark') updateTheme(sd, true);
+
+      // Listen for theme changes
+      window.addEventListener('theme-change', ((e: CustomEvent) => {
+        updateTheme(sd, e.detail === 'dark');
+      }) as EventListener);
+
+      const controls = createControls(sd.camera, resetBtn, dragHint);
+      controlsHandle = controls;
+
+      const textNodes = collectTextNodes();
+      const projection = createProjection(sd.camera, textNodes);
+
+      const charWraps = document.querySelectorAll<HTMLElement>('.char-wrap');
+
+      const ui = initUI({
+        controls,
+        h3dGreeting: document.getElementById('h3dGreeting'),
+        h3dClock: document.getElementById('h3dClock'),
+        h3dType: document.getElementById('h3dType'),
+        h3dDescEl: document.getElementById('h3dDesc'),
+        charWraps,
+        lens: document.getElementById('lens'),
+        lt1: document.getElementById('lt1'),
+        lt2: document.getElementById('lt2'),
+        ls: document.getElementById('ls'),
+        dragHint,
+        textNodes,
+      });
+      uiHandle = ui;
+
+      const animator = createAnimator({
+        scene: sd,
+        controls,
+        charWraps,
+        updateProjection: projection.update,
+        resetBtn,
+        onFrame: () => (ui as any).updateLens?.(),
+      });
+      animatorHandle = animator;
+
+      animator.start();
     }
-  } else {
-    // Tier-1 or Tier-2: full 3D scene
-    const canvas = document.getElementById('scene3d') as HTMLCanvasElement;
-    const resetBtn = document.getElementById('resetView');
-    const dragHint = document.getElementById('dragHint');
-
-    const sd = createScene(canvas, tier);
-    const controls = createControls(sd.camera, resetBtn, dragHint);
-
-    const textNodes = collectTextNodes();
-    const projection = createProjection(sd.camera, textNodes);
-
-    const charWraps = document.querySelectorAll<HTMLElement>('.char-wrap');
-
-    const ui = initUI({
-      controls,
-      h3dGreeting: document.getElementById('h3dGreeting'),
-      h3dClock: document.getElementById('h3dClock'),
-      h3dType: document.getElementById('h3dType'),
-      h3dDescEl: document.getElementById('h3dDesc'),
-      charWraps,
-      lens: document.getElementById('lens'),
-      lt1: document.getElementById('lt1'),
-      lt2: document.getElementById('lt2'),
-      ls: document.getElementById('ls'),
-      dragHint,
-      textNodes,
-    });
-
-    const animator = createAnimator({
-      scene: sd,
-      controls,
-      charWraps,
-      updateProjection: projection.update,
-      resetBtn,
-      onFrame: () => (ui as any).updateLens?.(),
-    });
-
-    animator.start();
   }
+
+  // Run on initial page load AND after View Transition re-navigation
+  document.addEventListener('astro:page-load', initHero);
+
+  // Clean up before navigating away (stop animation loop, remove listeners)
+  document.addEventListener('astro:before-preparation', () => {
+    animatorHandle?.dispose();
+    controlsHandle?.dispose();
+    uiHandle?.dispose();
+    animatorHandle = null;
+    controlsHandle = null;
+    uiHandle = null;
+  });
 </script>

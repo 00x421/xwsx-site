@@ -40,12 +40,6 @@
 </div>
 
 <script>
-  const playerToggle = document.getElementById('playerToggle');
-  const playerPanel = document.getElementById('playerPanel');
-  const volumeSlider = document.getElementById('playerVolume') as HTMLInputElement;
-  const trackBtns = document.querySelectorAll('.player-track-btn');
-  const playerHint = document.getElementById('playerHint');
-
   let audioCtx: AudioContext | null = null;
   let sourceNode: AudioBufferSourceNode | null = null;
   let gainNode: GainNode | null = null;
@@ -100,8 +94,10 @@
       lfoNode = null;
     }
     currentTrack = null;
-    playerToggle?.classList.remove('playing');
-    trackBtns.forEach(b => {
+    const toggle = document.getElementById('playerToggle');
+    toggle?.classList.remove('playing');
+    toggle?.style.removeProperty('--glow-color');
+    document.querySelectorAll('.player-track-btn').forEach(b => {
       b.classList.remove('active');
       const bars = b.querySelector('.playing-bars') as HTMLElement;
       if (bars) bars.style.display = 'none';
@@ -114,6 +110,7 @@
     const cfg = trackConfigs[name];
     if (!cfg) return;
 
+    const volumeSlider = document.getElementById('playerVolume') as HTMLInputElement;
     const buffer = createNoiseBuffer();
     sourceNode = ctx.createBufferSource();
     sourceNode.buffer = buffer;
@@ -143,9 +140,19 @@
 
     sourceNode.start();
     currentTrack = name;
-    playerToggle?.classList.add('playing');
+    const toggle = document.getElementById('playerToggle');
+    toggle?.classList.add('playing');
 
-    trackBtns.forEach(b => {
+    // Visualization: set glow color based on track
+    const glowColors: Record<string, string> = {
+      rain: '100, 160, 220',
+      ocean: '80, 180, 200',
+      forest: '120, 200, 140',
+      noise: '180, 160, 200',
+    };
+    toggle?.style.setProperty('--glow-color', glowColors[name] || '123,142,168');
+
+    document.querySelectorAll('.player-track-btn').forEach(b => {
       const isActive = b.getAttribute('data-track') === name;
       b.classList.toggle('active', isActive);
       const bars = b.querySelector('.playing-bars') as HTMLElement;
@@ -153,40 +160,61 @@
     });
   }
 
-  playerToggle?.addEventListener('click', () => {
-    const open = playerPanel?.classList.toggle('open');
-    if (!open && currentTrack) stopTrack();
-  });
+  function initMusicPlayer(): void {
+    const playerToggle = document.getElementById('playerToggle');
+    const playerPanel = document.getElementById('playerPanel');
+    const volumeSlider = document.getElementById('playerVolume') as HTMLInputElement;
+    const trackBtns = document.querySelectorAll('.player-track-btn');
+    const playerHint = document.getElementById('playerHint');
 
-  trackBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const track = btn.getAttribute('data-track');
-      if (currentTrack === track) {
-        stopTrack();
-      } else if (track) {
-        playTrack(track);
+    // Restore UI state if a track is still playing from before navigation
+    if (currentTrack) {
+      playerToggle?.classList.add('playing');
+      const glowColors: Record<string, string> = {
+        rain: '100, 160, 220',
+        ocean: '80, 180, 200',
+        forest: '120, 200, 140',
+        noise: '180, 160, 200',
+      };
+      playerToggle?.style.setProperty('--glow-color', glowColors[currentTrack] || '123,142,168');
+      trackBtns.forEach(b => {
+        const isActive = b.getAttribute('data-track') === currentTrack;
+        b.classList.toggle('active', isActive);
+        const bars = b.querySelector('.playing-bars') as HTMLElement;
+        if (bars) bars.style.display = isActive ? 'flex' : 'none';
+      });
+    }
+
+    playerToggle?.addEventListener('click', () => {
+      const open = playerPanel?.classList.toggle('open');
+      if (!open && currentTrack) stopTrack();
+    });
+
+    trackBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const track = btn.getAttribute('data-track');
+        if (currentTrack === track) {
+          stopTrack();
+        } else if (track) {
+          playTrack(track);
+        }
+      });
+    });
+
+    volumeSlider?.addEventListener('input', () => {
+      if (gainNode && currentTrack) {
+        const cfg = trackConfigs[currentTrack];
+        gainNode.gain.value = cfg.vol * (parseInt(volumeSlider.value) / 100);
       }
     });
-  });
 
-  volumeSlider?.addEventListener('input', () => {
-    if (gainNode && currentTrack) {
-      const cfg = trackConfigs[currentTrack];
-      gainNode.gain.value = cfg.vol * (parseInt(volumeSlider.value) / 100);
+    // First-visit hint
+    if (playerHint && !localStorage.getItem('player-hint-shown')) {
+      playerHint.classList.add('visible');
+      localStorage.setItem('player-hint-shown', '1');
+      setTimeout(() => playerHint.classList.remove('visible'), 3000);
     }
-  });
-
-  document.addEventListener('click', e => {
-    const target = e.target as HTMLElement;
-    if (!target.closest('.music-player') && playerPanel?.classList.contains('open')) {
-      playerPanel.classList.remove('open');
-    }
-  });
-
-  // First-visit hint
-  if (playerHint && !localStorage.getItem('player-hint-shown')) {
-    playerHint.classList.add('visible');
-    localStorage.setItem('player-hint-shown', '1');
-    setTimeout(() => playerHint.classList.remove('visible'), 3000);
   }
+
+  document.addEventListener('astro:page-load', initMusicPlayer);
 </script>

@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import MusicPlayer from '../components/MusicPlayer.astro';
+import { ClientRouter } from 'astro:transitions';
 
 export interface Props {
   title: string
@@ -16,6 +17,7 @@ const { title } = Astro.props
     <meta name="description" content="烦恼全無先生 · 独立开发者 / 全栈工程师" />
     <title>{title} | 烦恼全無先生</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
   </head>
   <body>
     <!-- Page loader -->
@@ -40,7 +42,7 @@ const { title } = Astro.props
 
     <script>
       import { initGlobalInteractions } from '../scripts/global-interactions';
-      initGlobalInteractions();
+      document.addEventListener('astro:page-load', initGlobalInteractions);
     </script>
   </body>
 </html>

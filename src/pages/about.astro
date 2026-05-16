@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import nowData from '../data/now.json';
 ---
 
 <BaseLayout title="关于">
@@ -18,24 +19,14 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <div class="about-section reveal reveal-d1">
-          <h3>📍 此刻</h3>
+          <h3>📍 此刻 <span class="now-updated">更新于 {nowData.updated}</span></h3>
           <div class="now-grid">
-            <div class="now-item">
-              <span class="now-label">正在做</span>
-              <span class="now-value">打磨个人站 3D 首页</span>
-            </div>
-            <div class="now-item">
-              <span class="now-label">在听</span>
-              <span class="now-value">Lofi Girl / 白噪音</span>
-            </div>
-            <div class="now-item">
-              <span class="now-label">在读</span>
-              <span class="now-value">《黑客与画家》Paul Graham</span>
-            </div>
-            <div class="now-item">
-              <span class="now-label">专注于</span>
-              <span class="now-value">效率工具 & 桌面端应用</span>
-            </div>
+            {nowData.items.map((item: { label: string; value: string }) => (
+              <div class="now-item">
+                <span class="now-label">{item.label}</span>
+                <span class="now-value">{item.value}</span>
+              </div>
+            ))}
           </div>
         </div>
 

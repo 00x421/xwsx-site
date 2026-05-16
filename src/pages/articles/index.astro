@@ -62,31 +62,35 @@ const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
 </BaseLayout>
 
 <script>
-  const pills = document.querySelectorAll('.tag-pill');
-  const cards = document.querySelectorAll<HTMLElement>('#articles-grid .article-card');
-  pills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      pills.forEach(p => {
-        p.classList.remove('active');
-        p.setAttribute('aria-pressed', 'false');
-      });
-      pill.classList.add('active');
-      pill.setAttribute('aria-pressed', 'true');
-      const tag = (pill as HTMLElement).dataset.tag;
-      cards.forEach(card => {
-        const tags = JSON.parse(card.dataset.tags || '[]');
-        const show = tag === 'all' || tags.includes(tag);
-        card.style.display = show ? '' : 'none';
-        if (show) {
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(12px)';
-          requestAnimationFrame(() => {
-            card.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-          });
-        }
+  function initArticlesPage(): void {
+    const pills = document.querySelectorAll('.tag-pill');
+    const cards = document.querySelectorAll<HTMLElement>('#articles-grid .article-card');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => {
+          p.classList.remove('active');
+          p.setAttribute('aria-pressed', 'false');
+        });
+        pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
+        const tag = (pill as HTMLElement).dataset.tag;
+        cards.forEach(card => {
+          const tags = JSON.parse(card.dataset.tags || '[]');
+          const show = tag === 'all' || tags.includes(tag);
+          card.style.display = show ? '' : 'none';
+          if (show) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(12px)';
+            requestAnimationFrame(() => {
+              card.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            });
+          }
+        });
       });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initArticlesPage);
 </script>

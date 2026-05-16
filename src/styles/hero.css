@@ -284,3 +284,34 @@
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ===== Dark mode overrides ===== */
+[data-theme="dark"] .char-el {
+  text-shadow:
+    0 1px 0 rgba(216,222,230,0.06),
+    0 2px 0 rgba(216,222,230,0.04),
+    0 4px 8px rgba(216,222,230,0.06);
+}
+[data-theme="dark"] .char-wrap.lit .char-el {
+  text-shadow:
+    0 1px 0 rgba(143,164,190,0.1),
+    0 2px 0 rgba(143,164,190,0.08),
+    0 8px 20px rgba(143,164,190,0.15);
+}
+[data-theme="dark"] .lens {
+  border-color: rgba(143,164,190,0.2);
+  background: radial-gradient(circle, rgba(22,25,30,0.3), rgba(22,25,30,0.1));
+  box-shadow:
+    0 0 0 1px rgba(143,164,190,0.04),
+    0 20px 60px rgba(143,164,190,0.08),
+    inset 0 0 40px rgba(22,25,30,0.2);
+}
+[data-theme="dark"] .vignette-overlay {
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(143,164,190,0.06) 100%);
+}
+[data-theme="dark"] .hero-fallback {
+  background: linear-gradient(135deg, #16191e 0%, #1a1e24 50%, #1e2228 100%);
+}
+[data-theme="dark"] .h3d-btn:hover {
+  box-shadow: 0 6px 20px rgba(143,164,190,0.08);
+}

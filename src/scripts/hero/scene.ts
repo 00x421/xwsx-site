@@ -8,6 +8,36 @@ import {
 import { createWireMat, createLineMat, createCelestialMat, createSolidMat, moonGeo, starGeo } from './materials';
 import type { Tier } from './detect';
 
+export type TimeMood = 'morning' | 'afternoon' | 'evening' | 'night';
+
+export function getTimeMood(): TimeMood {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'morning';
+  if (h >= 12 && h < 18) return 'afternoon';
+  if (h >= 18 && h < 22) return 'evening';
+  return 'night';
+}
+
+interface TimeTweaks {
+  fogMul: number;
+  particleOpacityMul: number;
+  accentR: number; accentG: number; accentB: number;
+}
+
+const TIME_TWEAKS: Record<TimeMood, TimeTweaks> = {
+  morning:   { fogMul: 0.9, particleOpacityMul: 0.9, accentR: 160, accentG: 170, accentB: 180 },
+  afternoon: { fogMul: 1.0, particleOpacityMul: 1.0, accentR: 123, accentG: 142, accentB: 168 },
+  evening:   { fogMul: 1.1, particleOpacityMul: 1.1, accentR: 155, accentG: 140, accentB: 130 },
+  night:     { fogMul: 1.15, particleOpacityMul: 1.15, accentR: 130, accentG: 150, accentB: 185 },
+};
+
+const TIME_TWEAKS_DARK: Record<TimeMood, TimeTweaks> = {
+  morning:   { fogMul: 0.95, particleOpacityMul: 1.0, accentR: 160, accentG: 172, accentB: 190 },
+  afternoon: { fogMul: 1.0, particleOpacityMul: 1.0, accentR: 143, accentG: 164, accentB: 190 },
+  evening:   { fogMul: 1.05, particleOpacityMul: 1.05, accentR: 165, accentG: 150, accentB: 135 },
+  night:     { fogMul: 1.1, particleOpacityMul: 1.1, accentR: 130, accentG: 155, accentB: 200 },
+};
+
 export interface GlowEntry { mesh: THREE.Mesh; baseOpacity: number; }
 export interface AnimEntry {
   mesh: THREE.Mesh | THREE.LineSegments;
@@ -39,11 +69,16 @@ export interface SceneDeps {
   pPos: Float32Array;
   particleCount: number;
   startTime: number;
+  timeMood: TimeMood;
 }
 
-export function createScene(canvas: HTMLCanvasElement, tier: Tier): SceneDeps {
+export function createScene(canvas: HTMLCanvasElement, tier: Tier, timeMood: TimeMood): SceneDeps {
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(BG_HEX, FOG_DENSITY);
+
+  // Apply time-of-day fog tweak
+  const tweaks = TIME_TWEAKS[timeMood];
+  (scene.fog as THREE.FogExp2).density = FOG_DENSITY * tweaks.fogMul;
 
   const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100);
   camera.position.set(0, 0, 8);
@@ -136,7 +171,7 @@ export function createScene(canvas: HTMLCanvasElement, tier: Tier): SceneDeps {
   pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
   const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
     color: ACCENT_HEX, size: PARTICLE_SIZE, transparent: true,
-    opacity: PARTICLE_OPACITY, sizeAttenuation: true,
+    opacity: PARTICLE_OPACITY * tweaks.particleOpacityMul, sizeAttenuation: true,
   }));
 
   // Group for idle rotation
@@ -172,6 +207,33 @@ export function createScene(canvas: HTMLCanvasElement, tier: Tier): SceneDeps {
     torus1, torus2, cubeEdges, octa, ico, dodec,
     particles, grid, geoGroup,
     glowMeshes, solidMats, lineMeshes, dotMeshes,
-    animObjs, pFinal, pPos, particleCount, startTime,
+    animObjs, pFinal, pPos, particleCount, startTime, timeMood,
   };
+}
+
+export function updateTheme(sd: SceneDeps, isDark: boolean): void {
+  const bgR = isDark ? 22 : 250;
+  const bgG = isDark ? 25 : 251;
+  const bgB = isDark ? 30 : 252;
+  const bgHex = (bgR << 16) | (bgG << 8) | bgB;
+
+  const tw = isDark ? TIME_TWEAKS_DARK[sd.timeMood] : TIME_TWEAKS[sd.timeMood];
+  const accentHex = (tw.accentR << 16) | (tw.accentG << 8) | tw.accentB;
+
+  sd.renderer.setClearColor(bgHex, 1);
+  (sd.scene.fog as THREE.FogExp2).color.setHex(bgHex);
+  (sd.scene.fog as THREE.FogExp2).density = FOG_DENSITY * tw.fogMul;
+
+  // Update all accent-colored materials
+  const wireable = [sd.torus1, sd.torus2, sd.octa, sd.ico, sd.dodec];
+  wireable.forEach(m => { (m.material as THREE.MeshBasicMaterial).color.setHex(accentHex); });
+  sd.lineMeshes.forEach(l => { (l.material as THREE.LineBasicMaterial).color.setHex(accentHex); });
+  (sd.cubeEdges.material as THREE.LineBasicMaterial).color.setHex(accentHex);
+  sd.dotMeshes.forEach(m => { (m.material as THREE.MeshBasicMaterial).color.setHex(accentHex); });
+  sd.solidMats.forEach(m => { m.color.setHex(accentHex); });
+  (sd.particles.material as THREE.PointsMaterial).color.setHex(accentHex);
+  ((sd.grid.material as THREE.Material[])[0] || sd.grid.material as THREE.Material).color.setHex(accentHex);
+
+  // Update grid
+  (sd.grid.material as THREE.Material).transparent = true;
 }

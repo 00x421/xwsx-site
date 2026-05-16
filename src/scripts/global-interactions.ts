@@ -1,5 +1,5 @@
 export function initGlobalInteractions(): void {
-  // Console easter egg
+  // Console easter egg (only once per session)
   console.log('%c✦ 烦恼全無先生', 'color: #7b8ea8; font-size: 20px; font-weight: bold;');
   console.log('%c独立开发者 / 全栈工程师\n欢迎来到控制台，这里没有藏什么秘密（大概）', 'color: #99aabb; font-size: 11px;');
 
@@ -92,3 +92,10 @@ export function initGlobalInteractions(): void {
     });
   }
 }
+
+// Immediately remove loader and reset overflow on navigation swaps
+// (loader hide in initGlobalInteractions relies on load event which doesn't fire on swaps)
+document.addEventListener('astro:after-swap', () => {
+  document.getElementById('loader')?.remove();
+  document.body.style.overflow = '';
+});
