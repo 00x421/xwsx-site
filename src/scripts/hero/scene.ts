@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {
   ACCENT_HEX, BG_HEX, FOG_DENSITY,
   PARTICLE_COUNT_DESKTOP, PARTICLE_FIELD_X, PARTICLE_FIELD_Y, PARTICLE_FIELD_Z,
-  PARTICLE_SIZE, PARTICLE_OPACITY,
+  PARTICLE_OPACITY, METEOR_TRAIL_MIN, METEOR_TRAIL_MAX,
   ENTRY_SPAWN_RANGE_X, ENTRY_SPAWN_RANGE_Y, ENTRY_SPAWN_RANGE_Z,
 } from './constants';
 import { createWireMat, createLineMat, createCelestialMat, createSolidMat, moonGeo, starGeo } from './materials';
@@ -57,8 +57,7 @@ export interface SceneDeps {
   octa: THREE.Mesh;
   ico: THREE.Mesh;
   dodec: THREE.Mesh;
-  particles: THREE.Points;
-  grid: THREE.GridHelper;
+  particles: THREE.LineSegments;
   geoGroup: THREE.Group;
   glowMeshes: GlowEntry[];
   solidMats: THREE.MeshBasicMaterial[];
@@ -67,6 +66,8 @@ export interface SceneDeps {
   animObjs: AnimEntry[];
   pFinal: Float32Array;
   pPos: Float32Array;
+  linePositions: Float32Array;
+  trailLengths: Float32Array;
   particleCount: number;
   startTime: number;
   timeMood: TimeMood;
@@ -152,13 +153,7 @@ export function createScene(canvas: HTMLCanvasElement, tier: Tier, timeMood: Tim
     dotMeshes.push(mesh);
   });
 
-  // Grid floor
-  const grid = new THREE.GridHelper(40, 40, ACCENT_HEX, ACCENT_HEX);
-  grid.position.y = -3.5;
-  (grid.material as THREE.Material).transparent = true;
-  (grid.material as THREE.Material).opacity = 0.06;
-
-  // Particle field
+  // Meteor field
   const particleCount = tier === 1 ? PARTICLE_COUNT_DESKTOP : Math.floor(PARTICLE_COUNT_DESKTOP * 0.4);
   const pFinal = new Float32Array(particleCount * 3);
   for (let i = 0; i < particleCount; i++) {
@@ -166,12 +161,47 @@ export function createScene(canvas: HTMLCanvasElement, tier: Tier, timeMood: Tim
     pFinal[i * 3 + 1] = (Math.random() - 0.5) * PARTICLE_FIELD_Y;
     pFinal[i * 3 + 2] = (Math.random() - 0.5) * PARTICLE_FIELD_Z;
   }
-  const pPos = new Float32Array(particleCount * 3);
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-  const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
-    color: ACCENT_HEX, size: PARTICLE_SIZE, transparent: true,
-    opacity: PARTICLE_OPACITY * tweaks.particleOpacityMul, sizeAttenuation: true,
+  const pPos = new Float32Array(pFinal);
+
+  // Random trail lengths per meteor
+  const trailLengths = new Float32Array(particleCount);
+  for (let i = 0; i < particleCount; i++) {
+    trailLengths[i] = METEOR_TRAIL_MIN + Math.random() * (METEOR_TRAIL_MAX - METEOR_TRAIL_MIN);
+  }
+
+  // LineSegments: each meteor = head vertex + tail vertex
+  const linePositions = new Float32Array(particleCount * 6);
+  const lineColors = new Float32Array(particleCount * 6);
+  const c = new THREE.Color(ACCENT_HEX);
+  // Light mode bg ≈ (0.98, 0.98, 0.99)
+  const bgR = 0.98, bgG = 0.98, bgB = 0.99;
+  for (let i = 0; i < particleCount; i++) {
+    const h = i * 6;
+    const t = h + 3;
+    linePositions[h]     = pPos[i * 3];
+    linePositions[h + 1] = pPos[i * 3 + 1];
+    linePositions[h + 2] = pPos[i * 3 + 2];
+    linePositions[t]     = pPos[i * 3];
+    linePositions[t + 1] = pPos[i * 3 + 1];
+    linePositions[t + 2] = pPos[i * 3 + 2] - trailLengths[i];
+    // Head: accent color (visible on both light/dark bg)
+    lineColors[h]     = c.r;
+    lineColors[h + 1] = c.g;
+    lineColors[h + 2] = c.b;
+    // Tail: fade into background
+    lineColors[t]     = bgR;
+    lineColors[t + 1] = bgG;
+    lineColors[t + 2] = bgB;
+  }
+
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+  const particles = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: PARTICLE_OPACITY * tweaks.particleOpacityMul,
+    depthWrite: false,
   }));
 
   // Group for idle rotation
@@ -179,7 +209,6 @@ export function createScene(canvas: HTMLCanvasElement, tier: Tier, timeMood: Tim
   [torus1, torus2, cubeEdges, octa, ico, dodec, ...lineMeshes, ...dotMeshes].forEach(m => {
     geoGroup.add(m);
   });
-  geoGroup.add(grid);
 
   scene.add(geoGroup);
   scene.add(particles);
@@ -205,9 +234,9 @@ export function createScene(canvas: HTMLCanvasElement, tier: Tier, timeMood: Tim
   return {
     scene, camera, renderer, canvas,
     torus1, torus2, cubeEdges, octa, ico, dodec,
-    particles, grid, geoGroup,
+    particles, geoGroup,
     glowMeshes, solidMats, lineMeshes, dotMeshes,
-    animObjs, pFinal, pPos, particleCount, startTime, timeMood,
+    animObjs, pFinal, pPos, linePositions, trailLengths, particleCount, startTime, timeMood,
   };
 }
 
@@ -231,9 +260,22 @@ export function updateTheme(sd: SceneDeps, isDark: boolean): void {
   (sd.cubeEdges.material as THREE.LineBasicMaterial).color.setHex(accentHex);
   sd.dotMeshes.forEach(m => { (m.material as THREE.MeshBasicMaterial).color.setHex(accentHex); });
   sd.solidMats.forEach(m => { m.color.setHex(accentHex); });
-  (sd.particles.material as THREE.PointsMaterial).color.setHex(accentHex);
-  ((sd.grid.material as THREE.Material[])[0] || sd.grid.material as THREE.Material).color.setHex(accentHex);
 
-  // Update grid
-  (sd.grid.material as THREE.Material).transparent = true;
+  // Update meteor colors: head = accent, tail = background (fade into bg)
+  const mc = new THREE.Color(accentHex);
+  const tailR = isDark ? 0.085 : 0.98;
+  const tailG = isDark ? 0.098 : 0.98;
+  const tailB = isDark ? 0.118 : 0.99;
+  const colors = sd.particles.geometry.attributes.color as THREE.BufferAttribute;
+  for (let i = 0; i < sd.particleCount; i++) {
+    const h = i * 6;
+    const t = h + 3;
+    colors.array[h]     = mc.r;
+    colors.array[h + 1] = mc.g;
+    colors.array[h + 2] = mc.b;
+    colors.array[t]     = tailR;
+    colors.array[t + 1] = tailG;
+    colors.array[t + 2] = tailB;
+  }
+  colors.needsUpdate = true;
 }

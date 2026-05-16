@@ -71,37 +71,40 @@ export function createAnimator(deps: AnimateDeps): { start: () => void; dispose:
     scene.dodec.rotation.y = t * 0.2;
   }
 
-  function animateParticles(t: number, entryT: number, mlX: number, mlY: number): void {
-    const { pPos, pFinal, particleCount } = scene;
+  function animateParticles(t: number, mlX: number, mlY: number): void {
+    const { pPos, particleCount, linePositions, trailLengths } = scene;
 
-    if (entryT < 1) {
-      for (let i = 0; i < particleCount * 3; i++) {
-        pPos[i] = pFinal[i] * (1 - Math.pow(1 - entryT, 3));
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      pPos[i3 + 2] += PARTICLE_FLOW_SPEED;
+      pPos[i3 + 1] += Math.sin(t * 0.5 + i * 0.3) * PARTICLE_FLOAT_AMPLITUDE;
+
+      // Repel from cursor
+      const dx = pPos[i3] - mlX;
+      const dy = pPos[i3 + 1] - mlY;
+      const dz = pPos[i3 + 2];
+      const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (d < PARTICLE_REPEL_RADIUS && d > 0.01) {
+        const force = (1 - d / PARTICLE_REPEL_RADIUS) * PARTICLE_REPEL_FORCE;
+        pPos[i3]     += (dx / d) * force;
+        pPos[i3 + 1] += (dy / d) * force;
+        pPos[i3 + 2] += (dz / d) * force * 0.3;
       }
-    } else {
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        pPos[i3 + 2] += PARTICLE_FLOW_SPEED;
-        pPos[i3 + 1] += Math.sin(t * 0.5 + i * 0.3) * PARTICLE_FLOAT_AMPLITUDE;
 
-        // Repel from cursor
-        const dx = pPos[i3] - mlX;
-        const dy = pPos[i3 + 1] - mlY;
-        const dz = pPos[i3 + 2];
-        const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        if (d < PARTICLE_REPEL_RADIUS && d > 0.01) {
-          const force = (1 - d / PARTICLE_REPEL_RADIUS) * PARTICLE_REPEL_FORCE;
-          pPos[i3]     += (dx / d) * force;
-          pPos[i3 + 1] += (dy / d) * force;
-          pPos[i3 + 2] += (dz / d) * force * 0.3;
-        }
-
-        if (pPos[i3 + 2] > scene.camera.position.z + PARTICLE_RESPAWN_OFFSET) {
-          pPos[i3]     = (Math.random() - 0.5) * PARTICLE_FIELD_X;
-          pPos[i3 + 1] = (Math.random() - 0.5) * PARTICLE_FIELD_Y;
-          pPos[i3 + 2] = scene.camera.position.z - PARTICLE_RESPAWN_OFFSET - Math.random() * PARTICLE_RESPAWN_BEHIND;
-        }
+      if (pPos[i3 + 2] > scene.camera.position.z + PARTICLE_RESPAWN_OFFSET) {
+        pPos[i3]     = (Math.random() - 0.5) * PARTICLE_FIELD_X;
+        pPos[i3 + 1] = (Math.random() - 0.5) * PARTICLE_FIELD_Y;
+        pPos[i3 + 2] = scene.camera.position.z - PARTICLE_RESPAWN_OFFSET - Math.random() * PARTICLE_RESPAWN_BEHIND;
       }
+
+      // Sync to line segment buffer: head + tail
+      const h = i * 6;
+      linePositions[h]     = pPos[i3];
+      linePositions[h + 1] = pPos[i3 + 1];
+      linePositions[h + 2] = pPos[i3 + 2];
+      linePositions[h + 3] = pPos[i3];
+      linePositions[h + 4] = pPos[i3 + 1];
+      linePositions[h + 5] = pPos[i3 + 2] - trailLengths[i];
     }
     scene.particles.geometry.attributes.position.needsUpdate = true;
   }
@@ -179,7 +182,7 @@ export function createAnimator(deps: AnimateDeps): { start: () => void; dispose:
     scene.geoGroup.rotation.y = t * GEO_IDLE_ROTATION_SPEED;
 
     // Particles
-    animateParticles(t, entryT, mlX, mlY);
+    animateParticles(t, mlX, mlY);
 
     // Glow
     animateGlow(mlX, mlY);

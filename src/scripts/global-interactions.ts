@@ -74,23 +74,6 @@ export function initGlobalInteractions(): void {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
-
-  // Logo easter egg (5x click spin)
-  const logoMark = document.getElementById('logo-mark');
-  if (logoMark) {
-    let clicks = 0, timer: ReturnType<typeof setTimeout>;
-    logoMark.addEventListener('click', e => {
-      e.preventDefault();
-      clicks++;
-      clearTimeout(timer);
-      timer = setTimeout(() => clicks = 0, 800);
-      if (clicks >= 5) {
-        logoMark.classList.add('logo-spin');
-        setTimeout(() => logoMark.classList.remove('logo-spin'), 600);
-        clicks = 0;
-      }
-    });
-  }
 }
 
 // Immediately remove loader and reset overflow on navigation swaps

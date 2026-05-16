@@ -32,19 +32,20 @@ export const ENTRY_SPAWN_RANGE_X = 20;
 export const ENTRY_SPAWN_RANGE_Y = 12;
 export const ENTRY_SPAWN_RANGE_Z = 20;
 
-// Particles
-export const PARTICLE_COUNT_DESKTOP = 500;
-export const PARTICLE_FIELD_X = 30;
-export const PARTICLE_FIELD_Y = 20;
-export const PARTICLE_FIELD_Z = 30;
-export const PARTICLE_SIZE = 0.04;
-export const PARTICLE_OPACITY = 0.5;
-export const PARTICLE_FLOW_SPEED = 0.015;
+// Particles → Meteors
+export const PARTICLE_COUNT_DESKTOP = 2500;
+export const PARTICLE_FIELD_X = 80;
+export const PARTICLE_FIELD_Y = 50;
+export const PARTICLE_FIELD_Z = 80;
+export const PARTICLE_OPACITY = 0.8;
+export const PARTICLE_FLOW_SPEED = 0.02;
 export const PARTICLE_FLOAT_AMPLITUDE = 0.001;
 export const PARTICLE_REPEL_RADIUS = 6;
 export const PARTICLE_REPEL_FORCE = 0.12;
-export const PARTICLE_RESPAWN_OFFSET = 15;
-export const PARTICLE_RESPAWN_BEHIND = 15;
+export const PARTICLE_RESPAWN_OFFSET = 40;
+export const PARTICLE_RESPAWN_BEHIND = 40;
+export const METEOR_TRAIL_MIN = 1.0;
+export const METEOR_TRAIL_MAX = 3.0;
 
 // Glow proximity
 export const GLOW_RADIUS = 8;
