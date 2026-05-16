@@ -8,6 +8,18 @@ const articles = (await getCollection('articles'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
+
+const tagCounts: Record<string, number> = {};
+articles.forEach(a => (a.data.tags || []).forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+
+const totalArticles = articles.length;
+const totalReadingMin = articles.reduce((sum, a) => {
+  const chars = (a.body || '').replace(/\s/g, '').length;
+  return sum + Math.max(1, Math.round(chars / 400));
+}, 0);
+
+const latestDate = articles[0]?.data.date;
+const daysSinceUpdate = latestDate ? Math.floor((Date.now() - latestDate.valueOf()) / 86400000) : null;
 ---
 
 <BaseLayout title="文章">
@@ -15,44 +27,96 @@ const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
   <main class="page-main">
     <div class="container">
       <div class="page-header reveal">
-        <h1>文章</h1>
-        <p>技术分享、开发心得、效率思考</p>
+        <h1 class="page-title-serif">文章</h1>
+        <p class="page-subtitle">技术分享、开发心得、效率思考</p>
       </div>
 
       {articles.length > 0 ? (
-        <section class="section section-compact">
-          <div class="tag-filter reveal">
-            <button class="tag-pill active" data-tag="all" aria-pressed="true">全部</button>
-            {allTags.map(tag => (
-              <button class="tag-pill" data-tag={tag} aria-pressed="false">{tag}</button>
-            ))}
-          </div>
-          <div class="articles-grid" id="articles-grid">
-            {articles.map(article => (
-              <a
-                href={`/articles/${article.slug}/`}
-                class="tilt-card article-card reveal"
-                data-tags={JSON.stringify(article.data.tags || [])}
-              >
-                {article.data.tags && (
-                  <div class="a-tags">
-                    {article.data.tags.map(tag => (
-                      <span>{tag}</span>
-                    ))}
+        <div class="articles-layout">
+          <section class="articles-main section-compact">
+            <div class="article-tabs reveal" id="articleTabs">
+              <button class="article-tab active" data-tag="all" aria-pressed="true">全部</button>
+              {allTags.map(tag => (
+                <button class="article-tab" data-tag={tag} aria-pressed="false">{tag}</button>
+              ))}
+            </div>
+
+            <div class="article-timeline" id="articleTimeline">
+              {articles.map(article => {
+                const charCount = (article.body || '').replace(/\s/g, '').length;
+                const readingMin = Math.max(1, Math.round(charCount / 400));
+                return (
+                <a
+                  href={`/articles/${article.slug}/`}
+                  class="article-entry reveal"
+                  data-tags={JSON.stringify(article.data.tags || [])}
+                  data-slug={article.slug}
+                >
+                  <div class="entry-date">
+                    <time>
+                      {article.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                    </time>
+                    <span class="entry-reading">{readingMin} 分钟阅读</span>
                   </div>
-                )}
-                <h3>{article.data.title}</h3>
-                <p class="excerpt">{article.data.summary}</p>
-                <div class="a-meta">
-                  <span class="date">
-                    {article.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
-                  </span>
-                  <span class="more">阅读全文 &rarr;</span>
+                  <div class="entry-body">
+                    <h2 class="entry-title">{article.data.title}</h2>
+                    {article.data.tags && article.data.tags.length > 0 && (
+                      <div class="entry-tags">
+                        {article.data.tags.map(tag => (
+                          <span>{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                    <p class="entry-excerpt">{article.data.summary}</p>
+                  </div>
+                </a>
+                );
+              })}
+            </div>
+          </section>
+
+          <aside class="articles-sidebar reveal">
+            <div class="sidebar-block">
+              <h4 class="sidebar-title">写作统计</h4>
+              <div class="sidebar-stats">
+                <div class="sidebar-stat">
+                  <span class="sidebar-stat-num">{totalArticles}</span>
+                  <span class="sidebar-stat-label">篇文章</span>
                 </div>
-              </a>
-            ))}
-          </div>
-        </section>
+                <div class="sidebar-stat">
+                  <span class="sidebar-stat-num">{totalReadingMin}</span>
+                  <span class="sidebar-stat-label">分钟总阅读</span>
+                </div>
+              </div>
+              {daysSinceUpdate !== null && (
+                <p class="sidebar-update">
+                  最近更新 {daysSinceUpdate === 0 ? '今天' : daysSinceUpdate === 1 ? '昨天' : `${daysSinceUpdate} 天前`}
+                </p>
+              )}
+            </div>
+
+            <div class="sidebar-block">
+              <h4 class="sidebar-title">话题</h4>
+              <div class="sidebar-tags">
+                {allTags.map(tag => (
+                  <button class="sidebar-tag" data-sidebar-tag={tag}>
+                    {tag}<span class="sidebar-tag-count">{tagCounts[tag]}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div class="sidebar-block">
+              <h4 class="sidebar-title">关于写作</h4>
+              <p class="sidebar-text">记录技术探索和独立开发路上的思考。不追热点，只写真正有价值的经验。</p>
+            </div>
+
+            <button class="sidebar-random" id="randomArticle">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+              随机阅读
+            </button>
+          </aside>
+        </div>
       ) : (
         <p class="empty-state">还没有文章，敬请期待</p>
       )}
@@ -63,34 +127,62 @@ const allTags = [...new Set(articles.flatMap(a => a.data.tags || []))].sort();
 
 <script>
   function initArticlesPage(): void {
-    const pills = document.querySelectorAll('.tag-pill');
-    const cards = document.querySelectorAll<HTMLElement>('#articles-grid .article-card');
-    pills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        pills.forEach(p => {
-          p.classList.remove('active');
-          p.setAttribute('aria-pressed', 'false');
-        });
-        pill.classList.add('active');
-        pill.setAttribute('aria-pressed', 'true');
-        const tag = (pill as HTMLElement).dataset.tag;
-        cards.forEach(card => {
-          const tags = JSON.parse(card.dataset.tags || '[]');
-          const show = tag === 'all' || tags.includes(tag);
-          card.style.display = show ? '' : 'none';
-          if (show) {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(12px)';
-            requestAnimationFrame(() => {
-              card.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
-              card.style.opacity = '1';
-              card.style.transform = 'translateY(0)';
-            });
-          }
-        });
+    const tabs = document.querySelectorAll('.article-tab');
+    const sidebarTags = document.querySelectorAll('.sidebar-tag');
+    const entries = document.querySelectorAll<HTMLElement>('#articleTimeline .article-entry');
+
+    function filterByTag(tag: string) {
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-pressed', 'false');
       });
+      sidebarTags.forEach(t => t.classList.remove('active'));
+
+      tabs.forEach(t => {
+        if ((t as HTMLElement).dataset.tag === tag) t.classList.add('active');
+      });
+      sidebarTags.forEach(t => {
+        if ((t as HTMLElement).dataset.sidebarTag === tag) t.classList.add('active');
+      });
+
+      entries.forEach(entry => {
+        const tags = JSON.parse(entry.dataset.tags || '[]');
+        const show = tag === 'all' || tags.includes(tag);
+        entry.style.display = show ? '' : 'none';
+        if (show) {
+          entry.style.opacity = '0';
+          entry.style.transform = 'translateY(8px)';
+          requestAnimationFrame(() => {
+            entry.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+            entry.style.opacity = '1';
+            entry.style.transform = 'translateY(0)';
+          });
+        }
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => filterByTag((tab as HTMLElement).dataset.tag || 'all'));
+    });
+    sidebarTags.forEach(tag => {
+      tag.addEventListener('click', () => filterByTag((tag as HTMLElement).dataset.sidebarTag || ''));
     });
   }
 
   document.addEventListener('astro:page-load', initArticlesPage);
+
+  function initRandomArticle(): void {
+    const btn = document.getElementById('randomArticle');
+    btn?.addEventListener('click', () => {
+      const entries = document.querySelectorAll<HTMLElement>('#articleTimeline .article-entry');
+      const visible = [...entries].filter(e => e.style.display !== 'none');
+      if (visible.length) {
+        const pick = visible[Math.floor(Math.random() * visible.length)];
+        const slug = pick.dataset.slug;
+        if (slug) window.location.href = `/articles/${slug}/`;
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initRandomArticle);
 </script>

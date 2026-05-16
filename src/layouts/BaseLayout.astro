@@ -42,7 +42,9 @@ const { title } = Astro.props
 
     <script>
       import { initGlobalInteractions } from '../scripts/global-interactions';
+      import { initCommandPalette } from '../scripts/command-palette';
       document.addEventListener('astro:page-load', initGlobalInteractions);
+      document.addEventListener('astro:page-load', initCommandPalette);
     </script>
   </body>
 </html>

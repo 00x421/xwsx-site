@@ -19,26 +19,31 @@ const apps = (await getCollection('apps'))
 
       {apps.length > 0 ? (
         <section class="section section-compact">
-          <div class="apps-grid">
+          <div class="apps-grid reveal">
             {apps.map(app => (
-              <a href={`/apps/${app.slug}/`} class="tilt-card app-card reveal">
-                <div class="app-top">
-                  <div class="app-icon">{app.data.icon || '📦'}</div>
-                  <span class="app-ver">v{app.data.version}</span>
-                </div>
-                <h3>{app.data.name}</h3>
-                <p class="app-desc">{app.data.summary}</p>
-                <div class="app-platforms">
-                  {app.data.platforms.map(p => (
-                    <span>{p}</span>
-                  ))}
-                </div>
-                <div class="app-actions">
-                  {app.data.downloadUrl && <span class="app-btn primary">下载</span>}
-                  {app.data.repoUrl && <span class="app-btn">源代码</span>}
+              <a href={`/apps/${app.slug}/`} class="app-card">
+                <div class="app-card-icon">{app.data.icon || '📦'}</div>
+                <div class="app-card-info">
+                  <div class="app-card-top">
+                    <h3>{app.data.name}</h3>
+                    <span class="app-ver">v{app.data.version}</span>
+                  </div>
+                  <p class="app-card-desc">{app.data.summary}</p>
+                  <div class="app-card-bottom">
+                    <div class="app-platforms">
+                      {app.data.platforms.map(p => (
+                        <span>{p}</span>
+                      ))}
+                    </div>
+                    <span class="app-card-arrow">→</span>
+                  </div>
                 </div>
               </a>
             ))}
+          </div>
+
+          <div class="list-end reveal">
+            <p>有想做的工具？欢迎交流 →</p>
           </div>
         </section>
       ) : (

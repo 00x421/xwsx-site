@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="404">
+  <Header />
+  <main class="page-main">
+    <div class="not-found">
+      <div class="not-found-content">
+        <span class="not-found-mark">✦</span>
+        <h1>404</h1>
+        <p>你迷路了，这里什么都没有。</p>
+        <p class="not-found-hint">也许你想回到 <a href="/">首页</a>，或者 <a href="/articles/">看看文章</a>。</p>
+        <a href="/" class="not-found-back">← 回到首页</a>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 60vh;
+    padding: 40px 20px;
+  }
+  .not-found-content {
+    text-align: center;
+  }
+  .not-found-mark {
+    display: block;
+    font-size: 32px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .not-found-content h1 {
+    font-size: 72px;
+    font-weight: 200;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .not-found-content p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .not-found-hint {
+    margin-bottom: 24px !important;
+  }
+  .not-found-hint a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .not-found-hint a:hover {
+    text-decoration: underline;
+  }
+  .not-found-back {
+    display: inline-block;
+    padding: 10px 24px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .not-found-back:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+  }
+</style>

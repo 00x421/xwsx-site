@@ -1,4 +1,36 @@
+interface TimePalette {
+  accent: string;
+  accentHover: string;
+  accentLight: string;
+  glow: string;
+  threeAccent: [number, number, number];
+}
+
+const PALETTES: Record<string, TimePalette> = {
+  morning:  { accent: '#a0887a', accentHover: '#8f776a', accentLight: 'rgba(160,136,122,0.08)', glow: 'rgba(160,136,122,0.15)', threeAccent: [160, 136, 122] },
+  afternoon: { accent: '#7b8ea8', accentHover: '#6a7f99', accentLight: 'rgba(123,142,168,0.08)', glow: 'rgba(123,142,168,0.15)', threeAccent: [123, 142, 168] },
+  evening:  { accent: '#8a7ba8', accentHover: '#796a99', accentLight: 'rgba(138,123,168,0.08)', glow: 'rgba(138,123,168,0.15)', threeAccent: [138, 123, 168] },
+  night:    { accent: '#6b8fa8', accentHover: '#5a7e99', accentLight: 'rgba(107,143,168,0.1)', glow: 'rgba(107,143,168,0.12)', threeAccent: [107, 143, 168] },
+};
+
+function applyTimePalette(): void {
+  const h = new Date().getHours();
+  const period = h >= 6 && h < 12 ? 'morning' : h >= 12 && h < 18 ? 'afternoon' : h >= 18 && h < 22 ? 'evening' : 'night';
+  const p = PALETTES[period];
+  const root = document.documentElement;
+  root.style.setProperty('--accent', p.accent);
+  root.style.setProperty('--accent-hover', p.accentHover);
+  root.style.setProperty('--accent-light', p.accentLight);
+  root.style.setProperty('--glow', p.glow);
+  root.style.setProperty('--three-accent-r', String(p.threeAccent[0]));
+  root.style.setProperty('--three-accent-g', String(p.threeAccent[1]));
+  root.style.setProperty('--three-accent-b', String(p.threeAccent[2]));
+}
+
 export function initGlobalInteractions(): void {
+  // Time-based accent palette
+  applyTimePalette();
+
   // Console easter egg (only once per session)
   console.log('%c✦ 烦恼全無先生', 'color: #7b8ea8; font-size: 20px; font-weight: bold;');
   console.log('%c独立开发者 / 全栈工程师\n欢迎来到控制台，这里没有藏什么秘密（大概）', 'color: #99aabb; font-size: 11px;');
@@ -34,22 +66,6 @@ export function initGlobalInteractions(): void {
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-  // 3D tilt + glow (for article/app cards)
-  document.querySelectorAll('.tilt-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const rx = ((y - rect.height / 2) / (rect.height / 2)) * -6;
-      const ry = ((x - rect.width / 2) / (rect.width / 2)) * 6;
-      (card as HTMLElement).style.setProperty('--mx', x + 'px');
-      (card as HTMLElement).style.setProperty('--my', y + 'px');
-      card.style.transform =
-        `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
-    });
-    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-  });
-
   // Reading progress bar
   const progressBar = document.getElementById('reading-progress');
   const detailContent = document.querySelector('.detail-content');
@@ -82,3 +98,43 @@ document.addEventListener('astro:after-swap', () => {
   document.getElementById('loader')?.remove();
   document.body.style.overflow = '';
 });
+
+// Konami Code easter egg
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let konamiIdx = 0;
+document.addEventListener('keydown', e => {
+  if (e.key === KONAMI[konamiIdx]) {
+    konamiIdx++;
+    if (konamiIdx === KONAMI.length) {
+      konamiIdx = 0;
+      triggerKonami();
+    }
+  } else {
+    konamiIdx = 0;
+  }
+});
+
+function triggerKonami(): void {
+  // Create a burst of falling ✦ symbols
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.textContent = '✦';
+    el.style.cssText = `
+      position: fixed;
+      top: -20px;
+      left: ${Math.random() * 100}vw;
+      font-size: ${12 + Math.random() * 20}px;
+      color: var(--accent);
+      opacity: ${0.3 + Math.random() * 0.7};
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform ${2 + Math.random() * 2}s cubic-bezier(0.16,1,0.3,1), opacity ${2 + Math.random() * 2}s;
+    `;
+    document.body.appendChild(el);
+    requestAnimationFrame(() => {
+      el.style.transform = `translateY(${window.innerHeight + 40}px) rotate(${Math.random() * 720}deg)`;
+      el.style.opacity = '0';
+    });
+    setTimeout(() => el.remove(), 5000);
+  }
+}
