@@ -59,7 +59,7 @@ const daysSinceUpdate = latestDate ? Math.floor((Date.now() - latestDate.valueOf
                     <span class="entry-reading">{readingMin} 分钟阅读</span>
                   </div>
                   <div class="entry-body">
-                    <h2 class="entry-title">{article.data.title}</h2>
+                    <h2 class="entry-title"><span class="entry-arrow">❯</span>{article.data.title}</h2>
                     {article.data.tags && article.data.tags.length > 0 && (
                       <div class="entry-tags">
                         {article.data.tags.map(tag => (

@@ -6,6 +6,12 @@ import { getCollection } from 'astro:content';
 
 const apps = (await getCollection('apps'))
   .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0));
+
+const roadmap = [
+  { status: '开发中', color: 'accent', items: ['剪贴板管理器', '窗口布局工具'] },
+  { status: '计划中', color: 'muted', items: ['文件快速启动器', 'Markdown 幻灯片'] },
+  { status: '想法', color: 'dim', items: ['习惯追踪器', '专注模式'] },
+];
 ---
 
 <BaseLayout title="应用">
@@ -19,31 +25,69 @@ const apps = (await getCollection('apps'))
 
       {apps.length > 0 ? (
         <section class="section section-compact">
-          <div class="apps-grid reveal">
+          <div class="apps-list reveal">
             {apps.map(app => (
               <a href={`/apps/${app.slug}/`} class="app-card">
-                <div class="app-card-icon">{app.data.icon || '📦'}</div>
-                <div class="app-card-info">
-                  <div class="app-card-top">
-                    <h3>{app.data.name}</h3>
+                <div class="app-card-chrome">
+                  <span class="chrome-dot"></span>
+                  <span class="chrome-dot"></span>
+                  <span class="chrome-dot"></span>
+                </div>
+                <div class="app-card-icon">{app.data.icon
+                  ? app.data.icon
+                  : <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+                }</div>
+                <div class="app-card-body">
+                  <div class="app-card-head">
+                    <div class="app-card-titles">
+                      <h3>{app.data.name}</h3>
+                      {app.data.subtitle && <span class="app-subtitle">{app.data.subtitle}</span>}
+                    </div>
                     <span class="app-ver">v{app.data.version}</span>
                   </div>
                   <p class="app-card-desc">{app.data.summary}</p>
-                  <div class="app-card-bottom">
+                  {app.data.features && (
+                    <div class="app-features">
+                      {app.data.features.map((f: string) => (
+                        <span class="app-feature">{f}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div class="app-card-foot">
                     <div class="app-platforms">
-                      {app.data.platforms.map(p => (
+                      {app.data.platforms.map((p: string) => (
                         <span>{p}</span>
                       ))}
                     </div>
-                    <span class="app-card-arrow">→</span>
+                    <span class="app-card-action">
+                      {app.data.platforms.includes('Web') ? '立即使用' : '下载安装'}
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                    </span>
                   </div>
                 </div>
               </a>
             ))}
           </div>
 
-          <div class="list-end reveal">
-            <p>有想做的工具？欢迎交流 →</p>
+          <div class="apps-cta reveal">
+            <h3>有想做的工具？</h3>
+            <p>如果你有好的工具想法，或者对我现有的应用有建议，欢迎一起交流。联系方式见<a href="/about/">关于页</a>。</p>
+          </div>
+
+          <div class="apps-roadmap reveal">
+            <h3 class="apps-roadmap-title">开发路线图</h3>
+            <div class="roadmap-grid">
+              {roadmap.map(col => (
+                <div class={`roadmap-col roadmap-${col.color}`}>
+                  <span class="roadmap-status">{col.status}</span>
+                  <div class="roadmap-items">
+                    {col.items.map(item => (
+                      <span class="roadmap-item">{item}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       ) : (

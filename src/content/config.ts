@@ -16,11 +16,13 @@ const appsCollection = defineCollection({
   type: 'content',
   schema: z.object({
     name: z.string(),
+    subtitle: z.string().optional(),
     version: z.string(),
     date: z.date().optional(),
     platforms: z.array(z.string()),
     icon: z.string().optional(),
     tags: z.array(z.string()).optional(),
+    features: z.array(z.string()).optional(),
     downloadUrl: z.string().optional(),
     repoUrl: z.string().optional(),
     screenshots: z.array(z.string()).optional(),

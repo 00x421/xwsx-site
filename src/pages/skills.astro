@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/skills.css';
+---
+
+<BaseLayout title="技能">
+  <Header />
+  <main>
+    <div class="container">
+      <div class="galaxy-wrap" id="galaxyWrap">
+        <canvas id="c"></canvas>
+        <div class="galaxy-hud">
+          <h1>技能星系</h1>
+          <p>每个星球代表一项技能 · 拖拽旋转 点击查看详情</p>
+        </div>
+      </div>
+
+      <div class="skills-list" id="skillsList"></div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<!-- Tooltip -->
+<div id="skill-tooltip">
+  <div id="tt-name"></div>
+  <div id="tt-cat"></div>
+</div>
+
+<!-- Panel overlay -->
+<div id="panel-overlay"></div>
+
+<!-- Detail panel -->
+<div id="skill-panel">
+  <div class="p-header">
+    <button class="p-close" id="panel-close">&times;</button>
+  </div>
+  <div class="p-content">
+    <div class="p-badge"></div>
+    <h3 class="p-title"></h3>
+    <div class="p-level-label">熟练度</div>
+    <div class="p-level"></div>
+    <div class="p-divider"></div>
+    <p class="p-desc"></p>
+    <div class="p-tags"></div>
+  </div>
+</div>
+
+<script>
+  import { createScene, applyTheme } from '../scripts/skills/scene';
+  import { setupInteraction } from '../scripts/skills/interaction';
+  import { startAnimation } from '../scripts/skills/animate';
+  import { skillsData } from '../scripts/skills/data';
+
+  document.addEventListener('astro:page-load', () => {
+    const c = document.getElementById('c') as HTMLCanvasElement;
+    const wrap = document.getElementById('galaxyWrap') as HTMLElement;
+    if (!c || !wrap) return;
+
+    const sd = createScene(c, wrap);
+
+    // Skills list (build before interaction so click handlers attach)
+    const list = document.getElementById('skillsList')!;
+    list.innerHTML = skillsData.map(sk => `
+      <div class="skill-item" data-name="${sk.name}">
+        <div class="skill-item-name">${sk.name}</div>
+        <div class="skill-item-cat">${sk.cat}</div>
+        <div class="skill-item-bar">
+          ${Array.from({length:5}, (_,i) =>
+            `<span style="background:${i < sk.level ? sk.color + 'cc' : ''}"></span>`
+          ).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    setupInteraction(sd);
+    startAnimation(sd);
+  });
+</script>

@@ -13,26 +13,41 @@ import nowData from '../data/now.json';
         <h1>关于</h1>
       </div>
       <div class="about-page">
+
+        <div class="terminal-window reveal" id="aboutTerminal">
+          <div class="terminal-chrome">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+            <span class="terminal-title">visitor@site ~ zsh</span>
+          </div>
+          <div class="terminal-body" id="termBody"></div>
+          <form class="terminal-input-row" id="termForm" autocomplete="off">
+            <span class="t-prompt">$</span>
+            <input type="text" id="termInput" class="terminal-input" spellcheck="false" placeholder="type help..." />
+          </form>
+        </div>
+
         <div class="about-section reveal">
-          <h3>👋 你好，我是烦恼全無先生</h3>
-          <p>一个热爱折腾的独立开发者 / 全栈工程师。白天写业务代码，晚上做自己的产品。相信好的工具可以改变人的工作方式。</p>
+          <h3 class="section-heading"><span class="tag-bracket">&lt;</span>你好<span class="tag-bracket"> /&gt;</span></h3>
+          <p>我是烦恼全無先生，一个热爱折腾的独立开发者 / 全栈工程师。白天写业务代码，晚上做自己的产品。相信好的工具可以改变人的工作方式。</p>
           <p>这个网站是我的数字花园，记录技术思考、开发心得，以及我做的那些小工具。</p>
         </div>
 
         <div class="about-section reveal">
-          <h3>💡 我在做什么</h3>
+          <h3 class="section-heading"><span class="tag-bracket">&lt;</span>我在做什么<span class="tag-bracket"> /&gt;</span></h3>
           <p>主要精力放在两件事上：一是打磨能真正提升效率的桌面端工具，用 Rust + Tauri 追求极致的小体积和快启动；二是探索 Web 前端的体验边界，比如这个首页的 3D 空间漫游。</p>
           <p>我对"好的软件"的定义是：打开即用，没有多余的东西，关掉也不留痕迹。</p>
         </div>
 
         <div class="about-section reveal">
-          <h3>✍️ 写作哲学</h3>
+          <h3 class="section-heading"><span class="tag-bracket">&lt;</span>写作哲学<span class="tag-bracket"> /&gt;</span></h3>
           <p>写文章不为流量，只为理清思路。每篇都是自己真正踩过的坑或者反复验证过的经验，保证读完能直接用。</p>
           <p>不追热点，不水文。如果一篇技术文章连自己都不想读第二遍，那就不值得发出来。</p>
         </div>
 
         <div class="about-section reveal reveal-d1">
-          <h3>📍 此刻 <span class="now-updated">更新于 {nowData.updated}</span></h3>
+          <h3 class="section-heading"><span class="tag-bracket">&lt;</span>此刻<span class="tag-bracket"> /&gt;</span> <span class="now-updated">更新于 {nowData.updated}</span></h3>
           <div class="now-timeline">
             {nowData.items.map((item: { label: string; value: string }) => (
               <div class="now-item">
@@ -44,26 +59,26 @@ import nowData from '../data/now.json';
         </div>
 
         <div class="about-section reveal reveal-d2">
-          <h3>🛠 技术栈</h3>
+          <h3 class="section-heading"><span class="tag-bracket">&lt;</span>技术栈<span class="tag-bracket"> /&gt;</span></h3>
           <div class="about-tags">
-            <span>TypeScript</span>
-            <span>React</span>
-            <span>Node.js</span>
-            <span>Python</span>
-            <span>Astro</span>
-            <span>Rust</span>
-            <span>Tauri</span>
+            <span class="code-tag tag-kw">TypeScript</span>
+            <span class="code-tag tag-fn">React</span>
+            <span class="code-tag tag-str">Node.js</span>
+            <span class="code-tag tag-fn">Python</span>
+            <span class="code-tag tag-kw">Astro</span>
+            <span class="code-tag tag-str">Rust</span>
+            <span class="code-tag tag-fn">Tauri</span>
           </div>
         </div>
 
         <div class="about-section reveal reveal-d3">
-          <h3>📝 关于这个网站</h3>
+          <h3 class="section-heading"><span class="tag-bracket">&lt;</span>关于这个网站<span class="tag-bracket"> /&gt;</span></h3>
           <p>本站使用 <strong>Astro</strong> 构建，采用静态站点生成方案。内容通过 Markdown 管理。</p>
           <p>雾蓝灰莫兰迪配色，精致利落的动效，追求现代极简的阅读体验。</p>
         </div>
 
         <div class="about-section about-connect reveal">
-          <h3>🔗 找到我</h3>
+          <h3 class="section-heading"><span class="tag-bracket">&lt;</span>找到我<span class="tag-bracket"> /&gt;</span></h3>
           <div class="connect-links">
             <a href="https://github.com/" target="_blank" rel="noopener" class="connect-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
@@ -99,4 +114,84 @@ import nowData from '../data/now.json';
     </div>
   </main>
   <Footer />
+  <script>
+    const responses: Record<string, string> = {
+      help: '可用命令: about, skills, projects, contact, clear, neofetch',
+      about: '一个热爱折腾的独立开发者。白天写业务代码，晚上做自己的产品。',
+      skills: 'TypeScript, React, Astro, Rust, Tauri, Node.js, Python, Three.js',
+      projects: '番茄时钟 — 极简番茄工作法计时器\nMarkdown 笔记 — 轻量在线编辑器\n更多正在开发中...',
+      contact: 'GitHub: github.com\n邮件: hello@example.com\n或直接在关于页底部找到我',
+      neofetch: '╭──────────────────╮\n│  烦恼全無先生     │  OS: Web Browser\n│                  │  Shell: zsh\n│  ┃┃┃┃┃┃┃┃┃┃┃┃  │  Editor: VS Code\n│  ┃┃┃┃┃┃┃┃┃┃┃┃  │  Lang: TypeScript\n│  ┃┃┃┃┃┃┃┃┃┃┃┃  │  Theme: Morandi Fog-Blue\n╰──────────────────╯',
+    };
+
+    function escapeHtml(s: string): string {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function addLine(body: HTMLElement, html: string, delay: number): Promise<void> {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const line = document.createElement('div');
+          line.className = 'terminal-line';
+          line.innerHTML = html;
+          body.appendChild(line);
+          body.scrollTop = body.scrollHeight;
+          resolve();
+        }, delay);
+      });
+    }
+
+    async function typeCommand(body: HTMLElement, cmd: string, output: string, outputClass: string, delay: number): Promise<void> {
+      await addLine(body, `<span class="t-prompt">$</span> <span class="t-cmd">${escapeHtml(cmd)}</span>`, delay);
+      await addLine(body, `<span class="${outputClass}">${escapeHtml(output)}</span>`, 120);
+    }
+
+    let initialized = false;
+
+    async function initTerminal() {
+      const body = document.getElementById('termBody');
+      const form = document.getElementById('termForm') as HTMLFormElement | null;
+      const input = document.getElementById('termInput') as HTMLInputElement | null;
+      if (!body || !form || !input) return;
+
+      body.innerHTML = '';
+
+      if (!initialized) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const cmd = input.value.trim();
+          if (!cmd) return;
+
+          addLine(body, `<span class="t-prompt">$</span> <span class="t-cmd">${escapeHtml(cmd)}</span>`, 0);
+
+          if (cmd === 'clear') {
+            body.innerHTML = '';
+          } else {
+            const res = responses[cmd.toLowerCase()];
+            if (res) {
+              res.split('\n').forEach(line => {
+                addLine(body, `<span class="t-output">${escapeHtml(line)}</span>`, 0);
+              });
+            } else {
+              addLine(body, `<span class="t-error">command not found: ${escapeHtml(cmd)}</span>`, 0);
+            }
+          }
+          input.value = '';
+          body.scrollTop = body.scrollHeight;
+        });
+        initialized = true;
+      }
+
+      // typing intro animation
+      await addLine(body, '<span class="t-dim"># 输入 help 查看可用命令</span>', 300);
+      await typeCommand(body, 'whoami', '烦恼全無先生 — 独立开发者 / 全栈工程师', 't-output', 500);
+      await typeCommand(body, 'ls focus/', '效率工具/   桌面端应用/   Web前端体验/', 't-output t-dim', 600);
+
+      input.focus();
+    }
+
+    document.addEventListener('astro:page-load', initTerminal);
+  </script>
 </BaseLayout>

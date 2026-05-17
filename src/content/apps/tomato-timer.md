@@ -1,10 +1,12 @@
 ---
 name: "番茄时钟"
+subtitle: "Pomodoro Timer"
 version: "2.1.0"
 date: 2026-04-15
 platforms: ["Windows", "macOS", "Linux"]
 icon: "🍅"
 tags: ["效率", "工具"]
+features: ["自定义时长", "白噪音", "统计看板", "桌面小组件"]
 downloadUrl: "https://example.com/download/tomato"
 repoUrl: "https://github.com/example/tomato-timer"
 summary: "一个极简但功能完整的番茄工作法计时器，支持自定义时长、白噪音、统计看板。"

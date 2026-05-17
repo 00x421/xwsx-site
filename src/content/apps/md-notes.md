@@ -1,10 +1,12 @@
 ---
 name: "Markdown 笔记"
+subtitle: "Markdown Notes"
 version: "1.3.0"
 date: 2026-03-20
 platforms: ["Web", "Windows"]
 icon: "📝"
 tags: ["效率", "工具"]
+features: ["实时预览", "标签分类", "导出 PDF", "离线使用"]
 downloadUrl: "https://example.com/app/md-notes"
 repoUrl: "https://github.com/example/md-notes"
 summary: "一个轻量级的在线 Markdown 编辑器 + 笔记管理工具，支持实时预览、标签分类、导出 PDF。"
